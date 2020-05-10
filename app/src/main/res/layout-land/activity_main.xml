@@ -2,9 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/Layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
     android:backgroundTint="#FFFFFF"
     tools:context=".MainActivity">
 
@@ -24,67 +24,67 @@
         tools:visibility="visible" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/wedgesButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:backgroundTint="#2196F3"
         android:text="Wedges"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/button2"
+        app:layout_constraintEnd_toStartOf="@+id/heteroatomsButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/heteroatomsButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:backgroundTint="#2196F3"
         android:text="Heteroatoms"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/button3"
-        app:layout_constraintStart_toEndOf="@+id/button"
+        app:layout_constraintEnd_toStartOf="@+id/multiBondsButton"
+        app:layout_constraintStart_toEndOf="@+id/wedgesButton"
         app:layout_constraintTop_toBottomOf="@+id/divider" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/multiBondsButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:backgroundTint="#2196F3"
         android:text="Multiple Bonds"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/button4"
-        app:layout_constraintStart_toEndOf="@+id/button2"
+        app:layout_constraintEnd_toStartOf="@+id/ringsButton"
+        app:layout_constraintStart_toEndOf="@+id/heteroatomsButton"
         app:layout_constraintTop_toBottomOf="@+id/divider" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/ringsButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:backgroundTint="#2196F3"
         android:text="Rings"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/switch1"
-        app:layout_constraintStart_toEndOf="@+id/button3"
+        app:layout_constraintEnd_toStartOf="@+id/stereoChemSlider"
+        app:layout_constraintStart_toEndOf="@+id/multiBondsButton"
         app:layout_constraintTop_toBottomOf="@+id/divider" />
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/stereoChemSlider"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="    Stereochem"
         android:thumbTint="#2196F3"
-        app:layout_constraintBottom_toTopOf="@+id/switch2"
+        app:layout_constraintBottom_toTopOf="@+id/nomenclatureSlider"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button4"
+        app:layout_constraintStart_toEndOf="@+id/ringsButton"
         app:layout_constraintTop_toBottomOf="@+id/divider"
         app:layout_constraintVertical_bias="0.0" />
 
     <Switch
-        android:id="@+id/switch2"
+        android:id="@+id/nomenclatureSlider"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="    Nomenclature"
@@ -92,8 +92,8 @@
         android:thumbTint="#2196F3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button4"
-        app:layout_constraintTop_toBottomOf="@+id/switch1" />
+        app:layout_constraintStart_toEndOf="@+id/ringsButton"
+        app:layout_constraintTop_toBottomOf="@+id/stereoChemSlider" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -109,7 +109,7 @@
         app:layout_constraintVertical_bias="0.0"></LinearLayout>
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/clearButton"
         android:layout_width="55dp"
         android:layout_height="54dp"
         android:layout_marginEnd="8dp"
@@ -120,25 +120,46 @@
         app:srcCompat="@android:drawable/ic_delete" />
 
     <ImageButton
-        android:id="@+id/imageButton7"
+        android:id="@+id/redoButton"
         android:layout_width="56dp"
         android:layout_height="52dp"
         android:layout_marginEnd="1dp"
         android:backgroundTint="#0FFFFFFF"
         android:scaleType="fitXY"
-        app:layout_constraintEnd_toStartOf="@+id/imageButton2"
+        app:layout_constraintEnd_toStartOf="@+id/clearButton"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/redo" />
 
     <ImageButton
-        android:id="@+id/imageButton8"
+        android:id="@+id/undoButton"
         android:layout_width="56dp"
         android:layout_height="52dp"
         android:layout_marginEnd="2dp"
         android:backgroundTint="#0FFFFFFF"
         android:scaleType="fitXY"
-        app:layout_constraintEnd_toStartOf="@+id/imageButton7"
+        app:layout_constraintEnd_toStartOf="@+id/redoButton"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/undo" />
+
+    <TextView
+        android:id="@+id/testText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="179dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/divider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/sketchPad"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/divider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/undoButton"></LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

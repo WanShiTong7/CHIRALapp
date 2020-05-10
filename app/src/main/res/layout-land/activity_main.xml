@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     android:backgroundTint="#FFFFFF"
     tools:context=".MainActivity">
 
@@ -11,7 +12,7 @@
         android:id="@+id/divider"
         android:layout_width="0dp"
         android:layout_height="5dp"
-        android:layout_marginTop="250dp"
+        android:layout_marginTop="200dp"
         android:background="?android:attr/listDivider"
         android:backgroundTint="#000000"
         android:foregroundTint="#000000"
@@ -87,6 +88,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="    Nomenclature"
+        android:textSize="12sp"
         android:thumbTint="#2196F3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -101,38 +103,42 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="@+id/divider"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/divider"
-        app:layout_constraintVertical_bias="1.0"></LinearLayout>
+        app:layout_constraintVertical_bias="0.0"></LinearLayout>
 
     <ImageButton
         android:id="@+id/imageButton2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#FFFFFF"
-        app:srcCompat="@android:drawable/ic_delete"
-        tools:layout_editor_absoluteX="664dp"
-        tools:layout_editor_absoluteY="9dp" />
+        android:layout_width="55dp"
+        android:layout_height="54dp"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="#0FFFFFFF"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_delete" />
 
     <ImageButton
         android:id="@+id/imageButton7"
         android:layout_width="56dp"
         android:layout_height="52dp"
-        android:backgroundTint="#FFFFFF"
+        android:layout_marginEnd="1dp"
+        android:backgroundTint="#0FFFFFFF"
         android:scaleType="fitXY"
-        app:srcCompat="@drawable/Redo"
-        tools:layout_editor_absoluteX="608dp"
-        tools:layout_editor_absoluteY="9dp" />
+        app:layout_constraintEnd_toStartOf="@+id/imageButton2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/redo" />
 
     <ImageButton
         android:id="@+id/imageButton8"
-        android:layout_width="53dp"
-        android:layout_height="53dp"
-        android:backgroundTint="#FFFFFF"
+        android:layout_width="56dp"
+        android:layout_height="52dp"
+        android:layout_marginEnd="2dp"
+        android:backgroundTint="#0FFFFFFF"
         android:scaleType="fitXY"
-        app:srcCompat="@drawable/Undo"
-        tools:layout_editor_absoluteX="555dp"
-        tools:layout_editor_absoluteY="9dp" />
+        app:layout_constraintEnd_toStartOf="@+id/imageButton7"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/undo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

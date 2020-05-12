@@ -3,13 +3,14 @@ package com.saki.chiralapp;
 public class AnchorPoint {
     private float x;
     private float y;
-    private String symbol;
+    private String symbol = "C";
     private AnchorPoint left;
     private AnchorPoint right;
     private AnchorPoint up;
     private boolean isWedgeStart = false;
     private AnchorPoint down;
     private boolean isDashStart = false;
+    private boolean isHorizontalFilled = false;
 
     public AnchorPoint(float x, float y, String symbol) {
         this.x = x;
@@ -88,4 +89,70 @@ public class AnchorPoint {
     public void setDashStart(boolean dashStart) {
         isDashStart = dashStart;
     }
+
+    public boolean isHorizontalFilled() {
+        return isHorizontalFilled;
+    }
+
+    public void setHorizontalFilled(boolean horizontalFilled) {
+        isHorizontalFilled = horizontalFilled;
+    }
+
+    public static boolean checkAndSetDownValid(AnchorPoint targetAnchor, AnchorPoint curAnchor) {
+        if (targetAnchor.getSymbol().equals("C") && (targetAnchor.getLeft()==null || targetAnchor.getRight()==null || targetAnchor.getUp()==null || targetAnchor.getDown()==null)) {
+
+
+            if (targetAnchor.getRight() == null && curAnchor.getLeft()== null) {
+                targetAnchor.setRight(curAnchor);
+                curAnchor.setLeft(targetAnchor);
+
+            } else if (targetAnchor.getLeft() == null && curAnchor.getRight()==null) {
+                targetAnchor.setLeft(curAnchor);
+                curAnchor.setRight(targetAnchor);
+
+            } else if (targetAnchor.getUp() == null && curAnchor.getDown()==null) {
+                targetAnchor.setWedgeStart(true);
+                targetAnchor.setUp(curAnchor);
+                curAnchor.setDown(targetAnchor);
+
+            } else if (targetAnchor.getDown() == null && curAnchor.getUp() == null) {
+                targetAnchor.setDashStart(true);
+                targetAnchor.setDown(curAnchor);
+                curAnchor.setUp(targetAnchor);
+
+            }
+
+            return true;
+
+        } else return false;
+    }
+
+   public  static boolean checkAndSetUpValid (AnchorPoint targetAnchor, AnchorPoint curAnchor) {
+       if (targetAnchor.getSymbol().equals("C") && (targetAnchor.getLeft() == null || targetAnchor.getRight() == null || targetAnchor.getUp() == null || targetAnchor.getDown() == null)) {
+
+
+           if (targetAnchor.getRight() == null && curAnchor.getLeft() == null) {
+               targetAnchor.setRight(curAnchor);
+               curAnchor.setLeft(targetAnchor);
+
+           } else if (targetAnchor.getLeft() == null && curAnchor.getRight() == null) {
+               targetAnchor.setLeft(curAnchor);
+               curAnchor.setRight(targetAnchor);
+
+           } else if (targetAnchor.getUp() == null && curAnchor.getDown() == null) {
+               curAnchor.setDashStart(true);
+               targetAnchor.setUp(curAnchor);
+               curAnchor.setDown(targetAnchor);
+
+           } else if (targetAnchor.getDown() == null && curAnchor.getUp() == null) {
+               curAnchor.setWedgeStart(true);
+               targetAnchor.setDown(curAnchor);
+               curAnchor.setUp(targetAnchor);
+
+           }
+
+           return true;
+       } else return false;
+   }
+
 }

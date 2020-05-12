@@ -24,6 +24,9 @@ public class MainActivity extends AppCompatActivity {
 
         final ArrayList<AnchorPoint> myStructure = new ArrayList<>();
 
+
+
+
         ImageButton clearButton = (ImageButton) findViewById(R.id.clearButton);
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     }
                     case MotionEvent.ACTION_UP: {
+
                         TextView upTestText = (TextView) findViewById(R.id.upTestText);
                         upTestText.setText(event.getX()+", "+event.getY());
                         AnchorPoint curAnchorPoint = new AnchorPoint(event.getX(),event.getY(),"C");
@@ -57,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
                         float minDist = Float.MAX_VALUE;
                         int downPointAnchorIndex = -1;
                         int upPointAnchorIndex = -1;
+                        boolean isValid=true;
+
                         if (size>0){
                             //find proximity of downpoint to anchor
                             for (AnchorPoint a: myStructure){
@@ -85,21 +91,8 @@ public class MainActivity extends AppCompatActivity {
                                 return true;
                             } else if (downPointAnchorIndex!=-1 && upPointAnchorIndex==-1) {
                                 //downpoint is valid and uppoint is invalid; fill empty slot with highest priority, set existing anchor as wedge/dash start
-                                if (myStructure.get(downPointAnchorIndex).getRight()==null){
-                                    myStructure.get(downPointAnchorIndex).setRight(curAnchorPoint);
-                                    curAnchorPoint.setLeft(myStructure.get(downPointAnchorIndex));
-                                } else if (myStructure.get(downPointAnchorIndex).getLeft()==null){
-                                    myStructure.get(downPointAnchorIndex).setLeft(curAnchorPoint);
-                                    curAnchorPoint.setRight(myStructure.get(downPointAnchorIndex));
-                                } else if (myStructure.get(downPointAnchorIndex).getUp()==null){
-                                    myStructure.get(downPointAnchorIndex).setWedgeStart(true);
-                                    myStructure.get(downPointAnchorIndex).setUp(curAnchorPoint);
-                                    curAnchorPoint.setDown(myStructure.get(downPointAnchorIndex));
-                                } else if (myStructure.get(downPointAnchorIndex).getDown()==null) {
-                                    myStructure.get(downPointAnchorIndex).setDashStart(true);
-                                    myStructure.get(downPointAnchorIndex).setDown(curAnchorPoint);
-                                    curAnchorPoint.setUp(myStructure.get(downPointAnchorIndex));
-                                }
+                                isValid=AnchorPoint.checkAndSetDownValid(myStructure.get(downPointAnchorIndex),curAnchorPoint);
+
                             } else if (downPointAnchorIndex==-1 && upPointAnchorIndex!=-1) {
 
                                 //this is unique case where downpoint is the curAnchor location; need to fix the location of curAnchor
@@ -107,36 +100,28 @@ public class MainActivity extends AppCompatActivity {
                                 curAnchorPoint.setY(downY);
 
                                 //downpoint is invalid and uppoint is valid; fill empty slot with highest priority, set new anchor as wedge/dash start
-                                if (myStructure.get(upPointAnchorIndex).getRight()==null){
-                                    myStructure.get(upPointAnchorIndex).setRight(curAnchorPoint);
-                                    curAnchorPoint.setLeft(myStructure.get(upPointAnchorIndex));
-                                } else if (myStructure.get(upPointAnchorIndex).getLeft()==null){
-                                    myStructure.get(upPointAnchorIndex).setLeft(curAnchorPoint);
-                                    curAnchorPoint.setRight(myStructure.get(upPointAnchorIndex));
-                                } else if (myStructure.get(upPointAnchorIndex).getUp()==null){
-                                    curAnchorPoint.setDashStart(true);
-                                    myStructure.get(upPointAnchorIndex).setUp(curAnchorPoint);
-                                    curAnchorPoint.setDown(myStructure.get(upPointAnchorIndex));
-                                } else if (myStructure.get(upPointAnchorIndex).getDown()==null) {
-                                    curAnchorPoint.setWedgeStart(true);
-                                    myStructure.get(upPointAnchorIndex).setDown(curAnchorPoint);
-                                    curAnchorPoint.setUp(myStructure.get(upPointAnchorIndex));
-                                }
+                                isValid=AnchorPoint.checkAndSetUpValid(myStructure.get(upPointAnchorIndex),curAnchorPoint);
+
                             } else if (downPointAnchorIndex!=-1 && upPointAnchorIndex!=-1 && downPointAnchorIndex!=upPointAnchorIndex) {
                                 //downpoint is valid, upoint is valid, upoint does not equal downpoint
-                                //todo: fix this to account for weird rings coming in and out
-                                myStructure.get(downPointAnchorIndex).setRight(myStructure.get(upPointAnchorIndex));
-                                myStructure.get(upPointAnchorIndex).setLeft(myStructure.get(downPointAnchorIndex));
+                                //todo: fix this - currently only checks target availability, need to check curAnchor's availability...
+                                //todo: maybe fix above in the AnchorPoint.checkAndSetDownValid method
+                                //todo: implement double bonds here
+
+                                isValid=AnchorPoint.checkAndSetDownValid(myStructure.get(upPointAnchorIndex),myStructure.get(downPointAnchorIndex));
+                                //myStructure.get(downPointAnchorIndex).setRight(myStructure.get(upPointAnchorIndex));
+                                //myStructure.get(upPointAnchorIndex).setLeft(myStructure.get(downPointAnchorIndex));
                                 return true;
                             } else if ((downPointAnchorIndex!=-1 && upPointAnchorIndex!=-1 && downPointAnchorIndex==upPointAnchorIndex)) {
                                 //upoint and downpoint are valid, upoint equals downpoint
+                                //todo: implement element switching here
                                 myStructure.get(size - 1).setRight(myStructure.get(downPointAnchorIndex));
                                 myStructure.get(downPointAnchorIndex).setLeft(myStructure.get(size-1));
                                 return true;
 
                             }
                         }
-                        myStructure.add(curAnchorPoint);
+                        if (isValid) myStructure.add(curAnchorPoint);
                         v.DrawList = myStructure;
                         return true;
                     }
@@ -147,6 +132,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     } //end of OnCreate
+
+
 
 
 

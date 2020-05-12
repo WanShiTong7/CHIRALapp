@@ -3,19 +3,13 @@ package com.saki.chiralapp;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.lang.Math.*;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,13 +24,21 @@ public class MainActivity extends AppCompatActivity {
 
         final ArrayList<AnchorPoint> myStructure = new ArrayList<>();
 
+        ImageButton clearButton = (ImageButton) findViewById(R.id.clearButton);
+        clearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               myStructure.clear();
 
+            }
+        });
 
         ConstraintLayout Layout = (ConstraintLayout) findViewById(R.id.constraintLayout);
+        //data collection from sketchpad user touch input; data dump into myStructure arraylist
         Layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v1, MotionEvent event) {
-                MyView v = (MyView) findViewById(R.id.sketchPad);
+                SketchPad v = (SketchPad) findViewById(R.id.sketchPad);
                 //AnchorPoint curAnchorPoint = new AnchorPoint(event.getX(),event.getY(),"C");
 
                 switch (event.getAction()) {
@@ -79,10 +81,10 @@ public class MainActivity extends AppCompatActivity {
                                 myStructure.get(size - 1).setRight(curAnchorPoint);
                                 curAnchorPoint.setLeft(myStructure.get(size - 1));
                             } else if (downPointAnchorIndex==-1 && upPointAnchorIndex==-1){
-                                //both uppoint and downpoint are invalid
+                                //both uppoint and downpoint are invalid; do nothing
                                 return true;
                             } else if (downPointAnchorIndex!=-1 && upPointAnchorIndex==-1) {
-                                //downpoint is valid and uppoint is invalid; fill empty slot with highest priority
+                                //downpoint is valid and uppoint is invalid; fill empty slot with highest priority, set existing anchor as wedge/dash start
                                 if (myStructure.get(downPointAnchorIndex).getRight()==null){
                                     myStructure.get(downPointAnchorIndex).setRight(curAnchorPoint);
                                     curAnchorPoint.setLeft(myStructure.get(downPointAnchorIndex));
@@ -90,11 +92,35 @@ public class MainActivity extends AppCompatActivity {
                                     myStructure.get(downPointAnchorIndex).setLeft(curAnchorPoint);
                                     curAnchorPoint.setRight(myStructure.get(downPointAnchorIndex));
                                 } else if (myStructure.get(downPointAnchorIndex).getUp()==null){
+                                    myStructure.get(downPointAnchorIndex).setWedgeStart(true);
                                     myStructure.get(downPointAnchorIndex).setUp(curAnchorPoint);
                                     curAnchorPoint.setDown(myStructure.get(downPointAnchorIndex));
                                 } else if (myStructure.get(downPointAnchorIndex).getDown()==null) {
+                                    myStructure.get(downPointAnchorIndex).setDashStart(true);
                                     myStructure.get(downPointAnchorIndex).setDown(curAnchorPoint);
                                     curAnchorPoint.setUp(myStructure.get(downPointAnchorIndex));
+                                }
+                            } else if (downPointAnchorIndex==-1 && upPointAnchorIndex!=-1) {
+
+                                //this is unique case where downpoint is the curAnchor location; need to fix the location of curAnchor
+                                curAnchorPoint.setX(downX);
+                                curAnchorPoint.setY(downY);
+
+                                //downpoint is invalid and uppoint is valid; fill empty slot with highest priority, set new anchor as wedge/dash start
+                                if (myStructure.get(upPointAnchorIndex).getRight()==null){
+                                    myStructure.get(upPointAnchorIndex).setRight(curAnchorPoint);
+                                    curAnchorPoint.setLeft(myStructure.get(upPointAnchorIndex));
+                                } else if (myStructure.get(upPointAnchorIndex).getLeft()==null){
+                                    myStructure.get(upPointAnchorIndex).setLeft(curAnchorPoint);
+                                    curAnchorPoint.setRight(myStructure.get(upPointAnchorIndex));
+                                } else if (myStructure.get(upPointAnchorIndex).getUp()==null){
+                                    curAnchorPoint.setDashStart(true);
+                                    myStructure.get(upPointAnchorIndex).setUp(curAnchorPoint);
+                                    curAnchorPoint.setDown(myStructure.get(upPointAnchorIndex));
+                                } else if (myStructure.get(upPointAnchorIndex).getDown()==null) {
+                                    curAnchorPoint.setWedgeStart(true);
+                                    myStructure.get(upPointAnchorIndex).setDown(curAnchorPoint);
+                                    curAnchorPoint.setUp(myStructure.get(upPointAnchorIndex));
                                 }
                             } else if (downPointAnchorIndex!=-1 && upPointAnchorIndex!=-1 && downPointAnchorIndex!=upPointAnchorIndex) {
                                 //todo: fix this, but probably okay

@@ -141,7 +141,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/undo" />
 
-    <com.saki.chiralapp.MyView
+    <com.saki.chiralapp.SketchPad
         android:id="@+id/sketchPad"
         android:layout_width="0dp"
         android:layout_height="0dp"

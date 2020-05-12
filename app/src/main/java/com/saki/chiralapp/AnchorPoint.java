@@ -7,9 +7,9 @@ public class AnchorPoint {
     private AnchorPoint left;
     private AnchorPoint right;
     private AnchorPoint up;
-    private boolean isWedgeStart = true;
+    private boolean isWedgeStart = false;
     private AnchorPoint down;
-    private boolean isDashStart = true;
+    private boolean isDashStart = false;
 
     public AnchorPoint(float x, float y, String symbol) {
         this.x = x;

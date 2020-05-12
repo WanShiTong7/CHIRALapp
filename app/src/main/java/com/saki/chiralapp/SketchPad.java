@@ -2,6 +2,7 @@ package com.saki.chiralapp;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
@@ -28,6 +29,12 @@ public class SketchPad extends View {
        Paint p = new Paint();
        p.setARGB(255, 0, 0, 0);
        p.setStrokeWidth(10);
+       Paint p1 = new Paint();
+       p1.setStrokeWidth(5);
+       p1.setStyle(Paint.Style.STROKE);
+       p1.setARGB(255, 255, 255, 255);
+       //p1.setPathEffect(new DashPathEffect(new float[] {10,10},0));
+
        //c.drawArc(10,10,400,400,270,10,true,p);
        Paint dashPaint = new Paint();
        dashPaint.setARGB(255, 0, 0, 255);
@@ -38,7 +45,7 @@ public class SketchPad extends View {
        wedgePaint.setStrokeWidth(10);
        wedgePaint.setStrokeCap(Paint.Cap.SQUARE);
        //todo: make sweepAngle variable inversely proportional to distance d
-       int sweepAngle = 5;
+       //int sweepAngle = 5;
       /* Paint dashPaint2 = new Paint();
        dashPaint2.setARGB(255, 0, 255, 0);
        dashPaint2.setStrokeWidth(10);
@@ -50,15 +57,65 @@ public class SketchPad extends View {
        if (DrawList != null) {
            for (AnchorPoint a : DrawList) {
                //todo: make dot appear only on first instance
-               c.drawCircle(a.getX(), a.getY(), 5, p);
+               if(DrawList.size()==1){
+                    c.drawCircle(a.getX(), a.getY(), 5, p);
+               }
 
                if (a.getDown() != null && a.isDashStart()==true) {
-                   c.drawLine(a.getX(), a.getY(), a.getDown().getX(), a.getDown().getY(), dashPaint);
+                   //c.drawLine(a.getX(), a.getY(), a.getDown().getX(), a.getDown().getY(), dashPaint);
+                   {
+                       //c.drawLine(a.getX(), a.getY(), a.getUp().getX(), a.getUp().getY(), wedgePaint);
+                       float d = (float) java.lang.Math.hypot(a.getX()-a.getDown().getX(),a.getY()-a.getDown().getY());
+                       float dashDistance = 10;
+                       float dashDistanceIncrement = 10;
+
+                       //adjust inverse proportionality of d to sweep angle
+                       int sweepRatio = 1000;
+                       float sweepAngle = (float) sweepRatio/d;
+
+                       //arc out into quadrant 4
+                       if(a.getDown().getX()>a.getX() && a.getDown().getY()<a.getY()){
+                           float startAngle = (float) (360-((180/ Math.PI)* (java.lang.Math.asin((a.getY()-a.getDown().getY())/d))));
+                           c.drawArc(a.getX()-d,a.getY()-d,a.getX()+d,a.getY()+d,startAngle-sweepAngle,2*sweepAngle,true,p);
+                           while (dashDistance<d){
+                               c.drawArc(a.getX()-dashDistance,a.getY()-dashDistance,a.getX()+dashDistance,a.getY()+dashDistance,startAngle-sweepAngle,2*sweepAngle,false,p1);
+                               dashDistance+=dashDistanceIncrement;
+                           }
+                       } else if (a.getDown().getX()<a.getX() && a.getDown().getY()<a.getY()){
+                           float startAngle = (float) (180+((180/ Math.PI)* (java.lang.Math.asin((a.getY()-a.getDown().getY())/d))));
+                           c.drawArc(a.getX()-d,a.getY()-d,a.getX()+d,a.getY()+d,startAngle-sweepAngle,2*sweepAngle,true,p);
+                           while (dashDistance<d){
+                               c.drawArc(a.getX()-dashDistance,a.getY()-dashDistance,a.getX()+dashDistance,a.getY()+dashDistance,startAngle-sweepAngle,2*sweepAngle,false,p1);
+                               dashDistance+=dashDistanceIncrement;
+                           }
+                       } else if (a.getDown().getX()<a.getX() && a.getDown().getY()>a.getY()) {
+                           float startAngle = (float) (180-((180/ Math.PI)* (java.lang.Math.asin((a.getDown().getY()-a.getY())/d))));
+                           c.drawArc(a.getX()-d,a.getY()-d,a.getX()+d,a.getY()+d,startAngle-sweepAngle,2*sweepAngle,true,p);
+                           while (dashDistance<d){
+                               c.drawArc(a.getX()-dashDistance,a.getY()-dashDistance,a.getX()+dashDistance,a.getY()+dashDistance,startAngle-sweepAngle,2*sweepAngle,false,p1);
+                               dashDistance+=dashDistanceIncrement;
+                           }
+                       } else if(a.getDown().getX()>a.getX() && a.getDown().getY()>a.getY()){
+                           float startAngle = (float) (((180/ Math.PI)* (java.lang.Math.asin((a.getDown().getY()-a.getY())/d))));
+                           c.drawArc(a.getX()-d,a.getY()-d,a.getX()+d,a.getY()+d,startAngle-sweepAngle,2*sweepAngle,true,p);
+                           while (dashDistance<d){
+                               c.drawArc(a.getX()-dashDistance,a.getY()-dashDistance,a.getX()+dashDistance,a.getY()+dashDistance,startAngle-sweepAngle,2*sweepAngle,false,p1);
+                               dashDistance+=dashDistanceIncrement;
+                           }
+                       } /*else if (1==1) {
+                       c.drawLine(a.getX(), a.getY(), a.getUp().getX(), a.getUp().getY(), wedgePaint);
+                   }*/
+                   }
                }
 
                if (a.getUp() != null && a.isWedgeStart()==true) {
                    //c.drawLine(a.getX(), a.getY(), a.getUp().getX(), a.getUp().getY(), wedgePaint);
                    float d = (float) java.lang.Math.hypot(a.getX()-a.getUp().getX(),a.getY()-a.getUp().getY());
+
+                   //adjust inverse proportionality of d to sweep angle
+
+                   int sweepRatio = 1000;
+                   float sweepAngle = (float) sweepRatio/d;
                    //arc out into quadrant 4
                    if(a.getUp().getX()>a.getX() && a.getUp().getY()<a.getY()){
                        float startAngle = (float) (360-((180/ Math.PI)* (java.lang.Math.asin((a.getY()-a.getUp().getY())/d))));

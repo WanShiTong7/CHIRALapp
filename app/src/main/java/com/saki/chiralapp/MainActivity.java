@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
                             //uppoint and downpoint are equal; link to last Anchor
                             float dist = (float) Math.sqrt((Math.pow(curAnchorPoint.getX() - downX,2)+(Math.pow(curAnchorPoint.getY() - downY,2))));
-                            if (dist<ANCHOR_RADIUS) {
+                            if (dist<ANCHOR_RADIUS && downPointAnchorIndex==-1 && upPointAnchorIndex==-1) {
                                 myStructure.get(size - 1).setRight(curAnchorPoint);
                                 curAnchorPoint.setLeft(myStructure.get(size - 1));
                             } else if (downPointAnchorIndex==-1 && upPointAnchorIndex==-1){
@@ -123,10 +123,17 @@ public class MainActivity extends AppCompatActivity {
                                     curAnchorPoint.setUp(myStructure.get(upPointAnchorIndex));
                                 }
                             } else if (downPointAnchorIndex!=-1 && upPointAnchorIndex!=-1 && downPointAnchorIndex!=upPointAnchorIndex) {
-                                //todo: fix this, but probably okay
+                                //downpoint is valid, upoint is valid, upoint does not equal downpoint
+                                //todo: fix this to account for weird rings coming in and out
                                 myStructure.get(downPointAnchorIndex).setRight(myStructure.get(upPointAnchorIndex));
                                 myStructure.get(upPointAnchorIndex).setLeft(myStructure.get(downPointAnchorIndex));
                                 return true;
+                            } else if ((downPointAnchorIndex!=-1 && upPointAnchorIndex!=-1 && downPointAnchorIndex==upPointAnchorIndex)) {
+                                //upoint and downpoint are valid, upoint equals downpoint
+                                myStructure.get(size - 1).setRight(myStructure.get(downPointAnchorIndex));
+                                myStructure.get(downPointAnchorIndex).setLeft(myStructure.get(size-1));
+                                return true;
+
                             }
                         }
                         myStructure.add(curAnchorPoint);

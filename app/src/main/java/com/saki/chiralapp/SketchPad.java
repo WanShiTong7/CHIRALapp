@@ -37,9 +37,9 @@ public class SketchPad extends View {
 
        //c.drawArc(10,10,400,400,270,10,true,p);
        Paint dashPaint = new Paint();
-       dashPaint.setARGB(255, 0, 0, 255);
+       dashPaint.setARGB(255, 0, 255, 0);
        dashPaint.setStrokeWidth(10);
-       dashPaint.setStrokeCap(Paint.Cap.SQUARE);
+       //dashPaint.setStrokeCap(Paint.Cap.SQUARE);
        Paint wedgePaint = new Paint();
        wedgePaint.setARGB(255, 255, 0, 0);
        wedgePaint.setStrokeWidth(10);
@@ -57,8 +57,12 @@ public class SketchPad extends View {
        if (DrawList != null) {
            for (AnchorPoint a : DrawList) {
                //todo: make dot appear only on first instance
+               Paint p3 = Element.elementHashMap.get(a.getSymbol()).getElementPaint();
+               if(a.getSymbol()!="C") c.drawText(a.getSymbol(),a.getX(),a.getY(),p3);
+
                if(DrawList.size()==1){
-                    c.drawCircle(a.getX(), a.getY(), 5, p);
+                    if(a.getSymbol()=="C") c.drawCircle(a.getX(), a.getY(), 10, p);
+                    //if(a.getSymbol()=="F") c.drawCircle(a.getX(), a.getY(), 10, dashPaint);
                }
 
                if (a.getDown() != null && a.isDashStart()==true) {

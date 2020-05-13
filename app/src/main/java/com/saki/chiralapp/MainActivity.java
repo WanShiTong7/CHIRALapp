@@ -104,8 +104,6 @@ public class MainActivity extends AppCompatActivity {
 
                             } else if (downPointAnchorIndex!=-1 && upPointAnchorIndex!=-1 && downPointAnchorIndex!=upPointAnchorIndex) {
                                 //downpoint is valid, upoint is valid, upoint does not equal downpoint
-                                //todo: fix this - currently only checks target availability, need to check curAnchor's availability...
-                                //todo: maybe fix above in the AnchorPoint.checkAndSetDownValid method
                                 //todo: implement double bonds here
 
                                 isValid=AnchorPoint.checkAndSetDownValid(myStructure.get(upPointAnchorIndex),myStructure.get(downPointAnchorIndex));
@@ -113,10 +111,12 @@ public class MainActivity extends AppCompatActivity {
                                 //myStructure.get(upPointAnchorIndex).setLeft(myStructure.get(downPointAnchorIndex));
                                 return true;
                             } else if ((downPointAnchorIndex!=-1 && upPointAnchorIndex!=-1 && downPointAnchorIndex==upPointAnchorIndex)) {
-                                //upoint and downpoint are valid, upoint equals downpoint
+                                //upoint and downpoint are valid, upoint equals downpoint; enter element switcher
                                 //todo: implement element switching here
-                                myStructure.get(size - 1).setRight(myStructure.get(downPointAnchorIndex));
-                                myStructure.get(downPointAnchorIndex).setLeft(myStructure.get(size-1));
+                                myStructure.get(downPointAnchorIndex).switchElement();
+
+                                //myStructure.get(size - 1).setRight(myStructure.get(downPointAnchorIndex));
+                                //myStructure.get(downPointAnchorIndex).setLeft(myStructure.get(size-1));
                                 return true;
 
                             }

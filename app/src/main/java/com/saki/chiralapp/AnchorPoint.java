@@ -1,5 +1,8 @@
 package com.saki.chiralapp;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class AnchorPoint {
     private float x;
     private float y;
@@ -11,6 +14,7 @@ public class AnchorPoint {
     private AnchorPoint down;
     private boolean isDashStart = false;
     private boolean isHorizontalFilled = false;
+    private ArrayList<String> elementList = new ArrayList<String>(Arrays.asList("C","O","N","H","F","Cl","Br","I"));
 
     public AnchorPoint(float x, float y, String symbol) {
         this.x = x;
@@ -99,7 +103,8 @@ public class AnchorPoint {
     }
 
     public static boolean checkAndSetDownValid(AnchorPoint targetAnchor, AnchorPoint curAnchor) {
-        if (targetAnchor.getSymbol().equals("C") && (targetAnchor.getLeft()==null || targetAnchor.getRight()==null || targetAnchor.getUp()==null || targetAnchor.getDown()==null)) {
+        //todo:remove fluorine from here and checksetupvalid later, only here to figure out drawing
+        if ((targetAnchor.getSymbol().equals("C") || targetAnchor.getSymbol().equals("F")) && (targetAnchor.getLeft()==null || targetAnchor.getRight()==null || targetAnchor.getUp()==null || targetAnchor.getDown()==null)) {
 
 
             if (targetAnchor.getRight() == null && curAnchor.getLeft()== null) {
@@ -128,7 +133,7 @@ public class AnchorPoint {
     }
 
    public  static boolean checkAndSetUpValid (AnchorPoint targetAnchor, AnchorPoint curAnchor) {
-       if (targetAnchor.getSymbol().equals("C") && (targetAnchor.getLeft() == null || targetAnchor.getRight() == null || targetAnchor.getUp() == null || targetAnchor.getDown() == null)) {
+       if ((targetAnchor.getSymbol().equals("C") || targetAnchor.getSymbol().equals("F")) && (targetAnchor.getLeft() == null || targetAnchor.getRight() == null || targetAnchor.getUp() == null || targetAnchor.getDown() == null)) {
 
 
            if (targetAnchor.getRight() == null && curAnchor.getLeft() == null) {
@@ -154,5 +159,12 @@ public class AnchorPoint {
            return true;
        } else return false;
    }
+
+   public void switchElement() {
+        int location = elementList.indexOf(getSymbol());
+        if(location==elementList.size()-1){
+            setSymbol("C");
+        } else setSymbol(elementList.get(location+1));
+    }
 
 }

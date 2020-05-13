@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
 
     static float downX=-1;
     static float downY=-1;
-    static final float ANCHOR_RADIUS = 50;
+    static final float ANCHOR_RADIUS = 75;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,14 +84,15 @@ public class MainActivity extends AppCompatActivity {
                             //uppoint and downpoint are equal; link to last Anchor
                             float dist = (float) Math.sqrt((Math.pow(curAnchorPoint.getX() - downX,2)+(Math.pow(curAnchorPoint.getY() - downY,2))));
                             if (dist<ANCHOR_RADIUS && downPointAnchorIndex==-1 && upPointAnchorIndex==-1) {
-                                myStructure.get(size - 1).setRight(curAnchorPoint);
-                                curAnchorPoint.setLeft(myStructure.get(size - 1));
+                                isValid=AnchorPoint.checkAndSet(myStructure.get(size - 1),curAnchorPoint,true);
+                                //myStructure.get(size - 1).setRight(curAnchorPoint);
+                                //curAnchorPoint.setLeft(myStructure.get(size - 1));
                             } else if (downPointAnchorIndex==-1 && upPointAnchorIndex==-1){
                                 //both uppoint and downpoint are invalid; do nothing
                                 return true;
                             } else if (downPointAnchorIndex!=-1 && upPointAnchorIndex==-1) {
                                 //downpoint is valid and uppoint is invalid; fill empty slot with highest priority, set existing anchor as wedge/dash start
-                                isValid=AnchorPoint.checkAndSetDownValid(myStructure.get(downPointAnchorIndex),curAnchorPoint);
+                                isValid=AnchorPoint.checkAndSet(myStructure.get(downPointAnchorIndex),curAnchorPoint,false);
 
                             } else if (downPointAnchorIndex==-1 && upPointAnchorIndex!=-1) {
 
@@ -100,13 +101,13 @@ public class MainActivity extends AppCompatActivity {
                                 curAnchorPoint.setY(downY);
 
                                 //downpoint is invalid and uppoint is valid; fill empty slot with highest priority, set new anchor as wedge/dash start
-                                isValid=AnchorPoint.checkAndSetUpValid(myStructure.get(upPointAnchorIndex),curAnchorPoint);
+                                isValid=AnchorPoint.checkAndSet(myStructure.get(upPointAnchorIndex),curAnchorPoint,true);
 
                             } else if (downPointAnchorIndex!=-1 && upPointAnchorIndex!=-1 && downPointAnchorIndex!=upPointAnchorIndex) {
                                 //downpoint is valid, upoint is valid, upoint does not equal downpoint
                                 //todo: implement double bonds here
 
-                                isValid=AnchorPoint.checkAndSetDownValid(myStructure.get(upPointAnchorIndex),myStructure.get(downPointAnchorIndex));
+                                isValid=AnchorPoint.checkAndSet(myStructure.get(upPointAnchorIndex),myStructure.get(downPointAnchorIndex),false);
                                 //myStructure.get(downPointAnchorIndex).setRight(myStructure.get(upPointAnchorIndex));
                                 //myStructure.get(upPointAnchorIndex).setLeft(myStructure.get(downPointAnchorIndex));
                                 return true;

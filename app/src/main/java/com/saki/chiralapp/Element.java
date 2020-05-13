@@ -51,6 +51,7 @@ public class Element {
         //Element paints
         Paint p = new Paint();
         p.setTextSize(50);
+        p.setFakeBoldText(true);
 
         if(symbol=="C"){
             p.setARGB(255,0,0,0);
@@ -61,13 +62,13 @@ public class Element {
         } else if (symbol=="O") {
             p.setARGB(255, 255, 0, 0);
         } else if (symbol=="N") {
-            p.setARGB(255, 0, 0, 255);
+            p.setARGB(255, 0, 0, 204);
         } else if (symbol=="Cl") {
-            p.setARGB(255, 255, 255, 0);
+            p.setARGB(255, 0, 102, 0);
         } else if (symbol=="Br") {
-            p.setARGB(255, 255, 0, 255);
+            p.setARGB(255, 102, 0, 255);
         }else if (symbol=="I") {
-            p.setARGB(255, 0, 255, 255);
+            p.setARGB(255, 102, 0, 102);
 
         }
 

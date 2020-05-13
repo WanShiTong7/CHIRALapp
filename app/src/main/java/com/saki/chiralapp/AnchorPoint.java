@@ -15,6 +15,7 @@ public class AnchorPoint {
     private boolean isDashStart = false;
     private boolean isHorizontalFilled = false;
     private ArrayList<String> elementList = new ArrayList<String>(Arrays.asList("C","O","N","H","F","Cl","Br","I"));
+    private int bondCount = 0;
 
     public AnchorPoint(float x, float y, String symbol) {
         this.x = x;
@@ -102,28 +103,45 @@ public class AnchorPoint {
         isHorizontalFilled = horizontalFilled;
     }
 
-    public static boolean checkAndSetDownValid(AnchorPoint targetAnchor, AnchorPoint curAnchor) {
-        //todo:remove fluorine from here and checksetupvalid later, only here to figure out drawing
-        if ((targetAnchor.getSymbol().equals("C") || targetAnchor.getSymbol().equals("F")) && (targetAnchor.getLeft()==null || targetAnchor.getRight()==null || targetAnchor.getUp()==null || targetAnchor.getDown()==null)) {
+    //GODTIER
+    public static boolean checkAndSet(AnchorPoint targetAnchor, AnchorPoint curAnchor, boolean isStart) {
 
+        if(targetAnchor.bondCount<Element.elementHashMap.get(targetAnchor.getSymbol()).getAllowedBonds() &&
+                curAnchor.bondCount<Element.elementHashMap.get(curAnchor.getSymbol()).getAllowedBonds()){
 
             if (targetAnchor.getRight() == null && curAnchor.getLeft()== null) {
                 targetAnchor.setRight(curAnchor);
                 curAnchor.setLeft(targetAnchor);
+                targetAnchor.bondCount++;
+                curAnchor.bondCount++;
 
             } else if (targetAnchor.getLeft() == null && curAnchor.getRight()==null) {
                 targetAnchor.setLeft(curAnchor);
                 curAnchor.setRight(targetAnchor);
+                targetAnchor.bondCount++;
+                curAnchor.bondCount++;
 
             } else if (targetAnchor.getUp() == null && curAnchor.getDown()==null) {
-                targetAnchor.setWedgeStart(true);
+                if(!isStart) {
+                    targetAnchor.setWedgeStart(true);
+                } else {
+                    curAnchor.setDashStart(true);
+                }
                 targetAnchor.setUp(curAnchor);
                 curAnchor.setDown(targetAnchor);
+                targetAnchor.bondCount++;
+                curAnchor.bondCount++;
 
             } else if (targetAnchor.getDown() == null && curAnchor.getUp() == null) {
-                targetAnchor.setDashStart(true);
+                if (!isStart) {
+                    targetAnchor.setDashStart(true);
+                } else {
+                    curAnchor.setWedgeStart(true);
+                }
                 targetAnchor.setDown(curAnchor);
                 curAnchor.setUp(targetAnchor);
+                targetAnchor.bondCount++;
+                curAnchor.bondCount++;
 
             }
 
@@ -132,39 +150,23 @@ public class AnchorPoint {
         } else return false;
     }
 
-   public  static boolean checkAndSetUpValid (AnchorPoint targetAnchor, AnchorPoint curAnchor) {
-       if ((targetAnchor.getSymbol().equals("C") || targetAnchor.getSymbol().equals("F")) && (targetAnchor.getLeft() == null || targetAnchor.getRight() == null || targetAnchor.getUp() == null || targetAnchor.getDown() == null)) {
-
-
-           if (targetAnchor.getRight() == null && curAnchor.getLeft() == null) {
-               targetAnchor.setRight(curAnchor);
-               curAnchor.setLeft(targetAnchor);
-
-           } else if (targetAnchor.getLeft() == null && curAnchor.getRight() == null) {
-               targetAnchor.setLeft(curAnchor);
-               curAnchor.setRight(targetAnchor);
-
-           } else if (targetAnchor.getUp() == null && curAnchor.getDown() == null) {
-               curAnchor.setDashStart(true);
-               targetAnchor.setUp(curAnchor);
-               curAnchor.setDown(targetAnchor);
-
-           } else if (targetAnchor.getDown() == null && curAnchor.getUp() == null) {
-               curAnchor.setWedgeStart(true);
-               targetAnchor.setDown(curAnchor);
-               curAnchor.setUp(targetAnchor);
-
-           }
-
-           return true;
-       } else return false;
-   }
-
    public void switchElement() {
         int location = elementList.indexOf(getSymbol());
-        if(location==elementList.size()-1){
-            setSymbol("C");
-        } else setSymbol(elementList.get(location+1));
+       if(location==elementList.size()-1) {
+           location=0;
+       } else {
+           location++;
+       }
+        while (this.bondCount>Element.elementHashMap.get(elementList.get(location)).getAllowedBonds()){
+            if(location==elementList.size()-1) {
+                location = 0;
+
+            } else {
+                location++;
+            }
+        }
+
+        setSymbol(elementList.get(location));
     }
 
 }

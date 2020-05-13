@@ -56,19 +56,27 @@ public class SketchPad extends View {
       //Draw the structure
        if (DrawList != null) {
            for (AnchorPoint a : DrawList) {
-               //todo: make dot appear only on first instance
-               Paint p3 = Element.elementHashMap.get(a.getSymbol()).getElementPaint();
-               if(a.getSymbol()!="C") c.drawText(a.getSymbol(),a.getX(),a.getY(),p3);
+               Paint elementalPaint = Element.elementHashMap.get(a.getSymbol()).getElementPaint();
+               if(!a.getSymbol().equals("C")) c.drawText(a.getSymbol(),a.getX(),a.getY(),elementalPaint);
 
                if(DrawList.size()==1){
-                    if(a.getSymbol()=="C") c.drawCircle(a.getX(), a.getY(), 10, p);
+                    if(a.getSymbol().equals("C")) c.drawCircle(a.getX(), a.getY(), 10, p);
                     //if(a.getSymbol()=="F") c.drawCircle(a.getX(), a.getY(), 10, dashPaint);
                }
 
+               if(a.getUp()!=null && a==a.getUp().getUp()){
+                   //todo: fix this! causing the app to crash... :,(
+                    //Draw Double bond
+                   float doubleBondWidth = 20;
+                   c.drawLine(a.getX()+doubleBondWidth, a.getY(), a.getUp().getX()+doubleBondWidth, a.getUp().getY(), p);
+                   c.drawLine(a.getX()-doubleBondWidth, a.getY(), a.getUp().getX()-doubleBondWidth, a.getUp().getY(), p);
+
+               }
+
                if (a.getDown() != null && a.isDashStart()==true) {
-                   //c.drawLine(a.getX(), a.getY(), a.getDown().getX(), a.getDown().getY(), dashPaint);
+                  //Draw dashes
                    {
-                       //c.drawLine(a.getX(), a.getY(), a.getUp().getX(), a.getUp().getY(), wedgePaint);
+
                        float d = (float) java.lang.Math.hypot(a.getX()-a.getDown().getX(),a.getY()-a.getDown().getY());
                        float dashDistance = 10;
                        float dashDistanceIncrement = 10;
@@ -106,14 +114,12 @@ public class SketchPad extends View {
                                c.drawArc(a.getX()-dashDistance,a.getY()-dashDistance,a.getX()+dashDistance,a.getY()+dashDistance,startAngle-sweepAngle,2*sweepAngle,false,p1);
                                dashDistance+=dashDistanceIncrement;
                            }
-                       } /*else if (1==1) {
-                       c.drawLine(a.getX(), a.getY(), a.getUp().getX(), a.getUp().getY(), wedgePaint);
-                   }*/
+                       }
                    }
                }
 
                if (a.getUp() != null && a.isWedgeStart()==true) {
-                   //c.drawLine(a.getX(), a.getY(), a.getUp().getX(), a.getUp().getY(), wedgePaint);
+                 //Draw Wedges
                    float d = (float) java.lang.Math.hypot(a.getX()-a.getUp().getX(),a.getY()-a.getUp().getY());
 
                    //adjust inverse proportionality of d to sweep angle
@@ -133,16 +139,16 @@ public class SketchPad extends View {
                    } else if(a.getUp().getX()>a.getX() && a.getUp().getY()>a.getY()){
                        float startAngle = (float) (((180/ Math.PI)* (java.lang.Math.asin((a.getUp().getY()-a.getY())/d))));
                        c.drawArc(a.getX()-d,a.getY()-d,a.getX()+d,a.getY()+d,startAngle-sweepAngle,2*sweepAngle,true,p);
-                   } /*else if (1==1) {
-                       c.drawLine(a.getX(), a.getY(), a.getUp().getX(), a.getUp().getY(), wedgePaint);
-                   }*/
+                   }
                }
 
                if (a.getLeft() != null) {
+                   //draw planar bonds
                    c.drawLine(a.getX(), a.getY(), a.getLeft().getX(), a.getLeft().getY(), p);
                }
 
                if (a.getRight() != null) {
+                   //draw planar bonds
                    c.drawLine(a.getX(), a.getY(), a.getRight().getX(), a.getRight().getY(), p);
                }
            }

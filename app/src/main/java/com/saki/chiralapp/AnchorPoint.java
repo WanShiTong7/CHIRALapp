@@ -16,6 +16,7 @@ public class AnchorPoint {
     private boolean isHorizontalFilled = false;
     private ArrayList<String> elementList = new ArrayList<String>(Arrays.asList("C","O","N","H","F","Cl","Br","I"));
     private int bondCount = 0;
+    private boolean isDoubleBondValid = false;
 
     public AnchorPoint(float x, float y, String symbol) {
         this.x = x;
@@ -103,6 +104,14 @@ public class AnchorPoint {
         isHorizontalFilled = horizontalFilled;
     }
 
+    public boolean isDoubleBondValid() {
+        return isDoubleBondValid;
+    }
+
+    public void setDoubleBondValid(boolean doubleBondValid) {
+        isDoubleBondValid = doubleBondValid;
+    }
+
     //GODTIER
     public static boolean checkAndSet(AnchorPoint targetAnchor, AnchorPoint curAnchor, boolean isStart) {
 
@@ -167,6 +176,43 @@ public class AnchorPoint {
         }
 
         setSymbol(elementList.get(location));
+    }
+
+    public static boolean checkDoubleBondValidity(AnchorPoint anchor1, AnchorPoint anchor2){
+        //check if nodes are already connected
+        if((anchor1.getLeft()==anchor2 || anchor1.getRight()==anchor2 || anchor1.getUp()==anchor2 || anchor1.getDown()==anchor2)
+        //check if all other connections on node 1 are planar
+        && ((anchor1.getUp()==anchor2 && anchor1.getDown()==null) || (anchor1.getDown()==anchor2 && anchor1.getUp()==null) || (anchor1.getDown()==null && anchor1.getUp()==null))
+        //check if all other connections on node 2 are planar
+        && ((anchor2.getUp()==anchor1 && anchor2.getDown()==null) || (anchor2.getDown()==anchor1 && anchor2.getUp()==null) || (anchor2.getDown()==null && anchor2.getUp()==null))){
+
+            return true;
+
+        } else {
+
+            return false;
+
+        }
+    }
+
+    public static void setDoubleBond(AnchorPoint anchor1, AnchorPoint anchor2){
+        //blindly set double bond
+        anchor1.setUp(anchor2);
+        anchor1.setDown(anchor2);
+        anchor2.setUp(anchor1);
+        anchor2.setDown(anchor1);
+        //remove planar connections between acnhor 1 and anchor 2
+        if(anchor1.getRight()==anchor2) {
+
+            anchor1.setRight(null);
+            anchor2.setLeft(null);
+
+        } else if (anchor1.getLeft()==anchor2){
+
+            anchor1.setLeft(null);
+            anchor2.setRight(null);
+
+        }
     }
 
 }

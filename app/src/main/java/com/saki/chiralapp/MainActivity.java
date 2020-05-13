@@ -103,17 +103,22 @@ public class MainActivity extends AppCompatActivity {
                                 //downpoint is invalid and uppoint is valid; fill empty slot with highest priority, set new anchor as wedge/dash start
                                 isValid=AnchorPoint.checkAndSet(myStructure.get(upPointAnchorIndex),curAnchorPoint,true);
 
-                            } else if (downPointAnchorIndex!=-1 && upPointAnchorIndex!=-1 && downPointAnchorIndex!=upPointAnchorIndex) {
+                            } else if (downPointAnchorIndex!=-1 && upPointAnchorIndex!=-1
+                                    && downPointAnchorIndex!=upPointAnchorIndex) {
                                 //downpoint is valid, upoint is valid, upoint does not equal downpoint
                                 //todo: implement double bonds here
-
-                                isValid=AnchorPoint.checkAndSet(myStructure.get(upPointAnchorIndex),myStructure.get(downPointAnchorIndex),false);
+                                boolean doubleBond = AnchorPoint.checkDoubleBondValidity(myStructure.get(upPointAnchorIndex),myStructure.get(downPointAnchorIndex));
+                                if(!doubleBond) {
+                                        isValid = AnchorPoint.checkAndSet(myStructure.get(upPointAnchorIndex), myStructure.get(downPointAnchorIndex), false);
+                                } else {
+                                    AnchorPoint.setDoubleBond(myStructure.get(upPointAnchorIndex),myStructure.get(downPointAnchorIndex));
+                                }
                                 //myStructure.get(downPointAnchorIndex).setRight(myStructure.get(upPointAnchorIndex));
                                 //myStructure.get(upPointAnchorIndex).setLeft(myStructure.get(downPointAnchorIndex));
                                 return true;
                             } else if ((downPointAnchorIndex!=-1 && upPointAnchorIndex!=-1 && downPointAnchorIndex==upPointAnchorIndex)) {
                                 //upoint and downpoint are valid, upoint equals downpoint; enter element switcher
-                                //todo: implement element switching here
+                                //todo: implement special cases for oxygen and nitrogen
                                 myStructure.get(downPointAnchorIndex).switchElement();
 
                                 //myStructure.get(size - 1).setRight(myStructure.get(downPointAnchorIndex));

@@ -115,12 +115,9 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 } else {
                                     AnchorPoint.setDoubleBond(myStructure.get(upPointAnchorIndex),myStructure.get(downPointAnchorIndex));
-                                    if(downY>myStructure.get(downPointAnchorIndex).getY()){
+                                    if(downY<myStructure.get(downPointAnchorIndex).getY()){
 
                                         myStructure.get(downPointAnchorIndex).setDoubleBondAbove(true);
-
-                                    } else if (downY>myStructure.get(upPointAnchorIndex).getY()){
-
                                         myStructure.get(upPointAnchorIndex).setDoubleBondAbove(true);
 
                                     }

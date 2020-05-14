@@ -18,7 +18,7 @@ public class AnchorPoint {
     private int bondCount = 0;
     private boolean isDoubleBondValid = false;
     private boolean isDoubleBondStart = false;
-    private boolean isDoubleBondAbove = true;
+    private boolean isDoubleBondAbove = false;
 
     public AnchorPoint(float x, float y, String symbol) {
         this.x = x;

@@ -20,13 +20,13 @@ public class SketchPad extends View {
 
     }
 
-    public static float[] doubleBondCoordinates (float xs, float ys, float xe, float ye, boolean isAbove){
+    /*public static float[] doubleBondCoordinates (float xs, float ys, float xe, float ye, boolean isAbove){
 
         float doubleBondOffsetAngle = (float) 1.5;
-        int doubleBondShrinkBy = 10;
+        int doubleBondShrinkBy = 15;
         float doubleBondGap = (float) (doubleBondShrinkBy * Math.atan(doubleBondOffsetAngle));
 
-        //if(ys>ye && isAbove) {
+        if(isAbove) {
             float radius = (float) java.lang.Math.hypot(xe - xs, ye - ys);
             float theta = (float) java.lang.Math.asin((ys - ye) / radius);
             float d = (float) java.lang.Math.hypot((xs+doubleBondShrinkBy)-(xs+radius-doubleBondShrinkBy),0);
@@ -46,9 +46,45 @@ public class SketchPad extends View {
             return coordinates;
 
 
-        //}
+        } else if(ys<ye) {
+            float radius = (float) java.lang.Math.hypot(xe - xs, ye - ys);
+            float theta = (float) java.lang.Math.asin((ys - ye) / radius);
+            float d = (float) java.lang.Math.hypot((xs+doubleBondShrinkBy)-(xs+radius-doubleBondShrinkBy),0);
 
-    }
+            float xsd = (float) (((radius-d)*java.lang.Math.cos(theta))+(xs-doubleBondShrinkBy));
+            float ysd = (float) ((ys+doubleBondGap) - ((radius-d)* Math.sin(theta)));
+
+            float xed = (float) ((radius*java.lang.Math.cos(theta))+(xs-doubleBondShrinkBy));
+            float yed = (float) ((ys+doubleBondGap) - (radius* Math.sin(theta)));
+
+            float[] coordinates = new float[4];
+            coordinates[0] = xsd;
+            coordinates[1] = ysd;
+            coordinates[2] = xed;
+            coordinates[3] = yed;
+
+            return coordinates;
+        } else {
+            float radius = (float) java.lang.Math.hypot(xe - xs, ye - ys);
+            float theta = (float) java.lang.Math.asin((ys - ye) / radius);
+            float d = (float) java.lang.Math.hypot((xs+doubleBondShrinkBy)-(xs+radius-doubleBondShrinkBy),0);
+
+            float xsd = xs-doubleBondShrinkBy;
+            float ysd = ys+doubleBondGap;
+
+            float xed = (float) ((d*java.lang.Math.cos(theta))+(xs-doubleBondShrinkBy));
+            float yed = (float) ((ys+doubleBondGap) - (d* Math.sin(theta)));
+
+            float[] coordinates = new float[4];
+            coordinates[0] = xsd;
+            coordinates[1] = ysd;
+            coordinates[2] = xed;
+            coordinates[3] = yed;
+
+            return coordinates;
+        }
+
+    }*/
 
     public SketchPad(Context context, AttributeSet a) {
         super(context,a);
@@ -102,8 +138,13 @@ public class SketchPad extends View {
 
                    if(a.isDoubleBondStart()){
 
-                       float[] dbCoordinates = doubleBondCoordinates(a.getX(),a.getY(),a.getUp().getX(),a.getUp().getY(),a.isDoubleBondAbove());
-                       c.drawLine(dbCoordinates[0],dbCoordinates[1],dbCoordinates[2],dbCoordinates[3],p);
+                       //todo: fix this to use new methods
+                       float[] dbInfo = myMath.shortBond(a.getX(),a.getY(),a.getUp().getX(),a.getUp().getY(),a.isDoubleBondAbove());
+                       //above method returns [0: xOrigin, 1: yOrigin, 2: phi, 3: xsbStart, 4: ysbStart, 5: xsbEnd, 6: ysbEnd]
+                       float[] dbStartCoordinates = myMath.rotate(dbInfo[3],dbInfo[4],dbInfo[0],dbInfo[1],dbInfo[2]);
+                       float[] dbEndCoordinates = myMath.rotate(dbInfo[5],dbInfo[6],dbInfo[0],dbInfo[1],dbInfo[2]);
+                       //float[] dbCoordinates = doubleBondCoordinates(a.getX(),a.getY(),a.getUp().getX(),a.getUp().getY(),a.isDoubleBondAbove());
+                       c.drawLine(dbStartCoordinates[0],dbStartCoordinates[1],dbEndCoordinates[0],dbEndCoordinates[1],p);
                        c.drawLine(a.getX(),a.getY(),a.getUp().getX(),a.getUp().getY(),p);
 
                    }

@@ -17,6 +17,8 @@ public class AnchorPoint {
     private ArrayList<String> elementList = new ArrayList<String>(Arrays.asList("C","O","N","H","F","Cl","Br","I"));
     private int bondCount = 0;
     private boolean isDoubleBondValid = false;
+    private boolean isDoubleBondStart = false;
+    private boolean isDoubleBondAbove = true;
 
     public AnchorPoint(float x, float y, String symbol) {
         this.x = x;
@@ -112,6 +114,22 @@ public class AnchorPoint {
         isDoubleBondValid = doubleBondValid;
     }
 
+    public boolean isDoubleBondStart() {
+        return isDoubleBondStart;
+    }
+
+    public void setDoubleBondStart(boolean doubleBondStart) {
+        isDoubleBondStart = doubleBondStart;
+    }
+
+    public boolean isDoubleBondAbove() {
+        return isDoubleBondAbove;
+    }
+
+    public void setDoubleBondAbove(boolean doubleBondAbove) {
+        isDoubleBondAbove = doubleBondAbove;
+    }
+
     //GODTIER
     public static boolean checkAndSet(AnchorPoint targetAnchor, AnchorPoint curAnchor, boolean isStart) {
 
@@ -201,6 +219,15 @@ public class AnchorPoint {
         anchor1.setDown(anchor2);
         anchor2.setUp(anchor1);
         anchor2.setDown(anchor1);
+        if(anchor1.getX()<anchor2.getX()){
+
+            anchor1.setDoubleBondStart(true);
+
+        } else {
+
+            anchor2.setDoubleBondStart(true);
+
+        }
         //remove planar connections between acnhor 1 and anchor 2
         if(anchor1.getRight()==anchor2) {
 

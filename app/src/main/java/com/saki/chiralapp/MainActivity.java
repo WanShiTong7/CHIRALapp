@@ -108,10 +108,25 @@ public class MainActivity extends AppCompatActivity {
                                 //downpoint is valid, upoint is valid, upoint does not equal downpoint
                                 //todo: implement double bonds here
                                 boolean doubleBond = AnchorPoint.checkDoubleBondValidity(myStructure.get(upPointAnchorIndex),myStructure.get(downPointAnchorIndex));
+
                                 if(!doubleBond) {
+                                    if(!(myStructure.get(upPointAnchorIndex).getLeft()==myStructure.get(downPointAnchorIndex) || myStructure.get(upPointAnchorIndex).getRight()==myStructure.get(downPointAnchorIndex) || myStructure.get(upPointAnchorIndex).getUp()==myStructure.get(downPointAnchorIndex) || myStructure.get(upPointAnchorIndex).getDown()==myStructure.get(downPointAnchorIndex))) {
                                         isValid = AnchorPoint.checkAndSet(myStructure.get(upPointAnchorIndex), myStructure.get(downPointAnchorIndex), false);
+                                    }
                                 } else {
                                     AnchorPoint.setDoubleBond(myStructure.get(upPointAnchorIndex),myStructure.get(downPointAnchorIndex));
+                                    if(downY>myStructure.get(downPointAnchorIndex).getY()){
+
+                                        myStructure.get(downPointAnchorIndex).setDoubleBondAbove(true);
+
+                                    } else if (downY>myStructure.get(upPointAnchorIndex).getY()){
+
+                                        myStructure.get(upPointAnchorIndex).setDoubleBondAbove(true);
+
+                                    }
+
+
+
                                 }
                                 //myStructure.get(downPointAnchorIndex).setRight(myStructure.get(upPointAnchorIndex));
                                 //myStructure.get(upPointAnchorIndex).setLeft(myStructure.get(downPointAnchorIndex));

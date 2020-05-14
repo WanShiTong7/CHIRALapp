@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class SketchPad extends View {
@@ -19,6 +20,36 @@ public class SketchPad extends View {
 
     }
 
+    public static float[] doubleBondCoordinates (float xs, float ys, float xe, float ye, boolean isAbove){
+
+        float doubleBondOffsetAngle = (float) 1.5;
+        int doubleBondShrinkBy = 10;
+        float doubleBondGap = (float) (doubleBondShrinkBy * Math.atan(doubleBondOffsetAngle));
+
+        //if(ys>ye && isAbove) {
+            float radius = (float) java.lang.Math.hypot(xe - xs, ye - ys);
+            float theta = (float) java.lang.Math.asin((ys - ye) / radius);
+            float d = (float) java.lang.Math.hypot((xs+doubleBondShrinkBy)-(xs+radius-doubleBondShrinkBy),0);
+
+            float xsd = (float) (((radius-d)*java.lang.Math.cos(theta))+(xs-doubleBondShrinkBy));
+            float ysd = (float) ((ys-doubleBondGap) - ((radius-d)* Math.sin(theta)));
+
+            float xed = (float) ((radius*java.lang.Math.cos(theta))+(xs-doubleBondShrinkBy));
+            float yed = (float) ((ys-doubleBondGap) - (radius* Math.sin(theta)));
+
+            float[] coordinates = new float[4];
+            coordinates[0] = xsd;
+            coordinates[1] = ysd;
+            coordinates[2] = xed;
+            coordinates[3] = yed;
+
+            return coordinates;
+
+
+        //}
+
+    }
+
     public SketchPad(Context context, AttributeSet a) {
         super(context,a);
     }
@@ -28,7 +59,7 @@ public class SketchPad extends View {
 
        Paint p = new Paint();
        p.setARGB(255, 0, 0, 0);
-       p.setStrokeWidth(10);
+       p.setStrokeWidth(7);
        Paint p1 = new Paint();
        p1.setStrokeWidth(5);
        p1.setStyle(Paint.Style.STROKE);
@@ -65,15 +96,23 @@ public class SketchPad extends View {
                }
 
                if(a.getUp()!=null && a==a.getUp().getUp()){
-                   //todo: fix this! causing the app to crash... :,(
+
                     //Draw Double bond
-                   float doubleBondWidth = 20;
-                   c.drawLine(a.getX()+doubleBondWidth, a.getY(), a.getUp().getX()+doubleBondWidth, a.getUp().getY(), p);
-                   c.drawLine(a.getX()-doubleBondWidth, a.getY(), a.getUp().getX()-doubleBondWidth, a.getUp().getY(), p);
+                   //float doubleBondWidth = 10;
+
+                   if(a.isDoubleBondStart()){
+
+                       float[] dbCoordinates = doubleBondCoordinates(a.getX(),a.getY(),a.getUp().getX(),a.getUp().getY(),a.isDoubleBondAbove());
+                       c.drawLine(dbCoordinates[0],dbCoordinates[1],dbCoordinates[2],dbCoordinates[3],p);
+                       c.drawLine(a.getX(),a.getY(),a.getUp().getX(),a.getUp().getY(),p);
+
+                   }
+                   //c.drawLine(a.getX()+doubleBondWidth, a.getY()-doubleBondWidth, a.getUp().getX()+doubleBondWidth, a.getUp().getY()-doubleBondWidth, p);
+                   //c.drawLine(a.getX()-doubleBondWidth, a.getY()+doubleBondWidth, a.getUp().getX()-doubleBondWidth, a.getUp().getY()+doubleBondWidth, p);
 
                }
 
-               if (a.getDown() != null && a.isDashStart()==true) {
+               if (a.getDown()!=null && a!=a.getDown().getDown() && a.getDown() != null && a.isDashStart()==true) {
                   //Draw dashes
                    {
 
@@ -118,7 +157,7 @@ public class SketchPad extends View {
                    }
                }
 
-               if (a.getUp() != null && a.isWedgeStart()==true) {
+               if (a.getUp() != null && a!=a.getUp().getUp() && a.isWedgeStart()==true) {
                  //Draw Wedges
                    float d = (float) java.lang.Math.hypot(a.getX()-a.getUp().getX(),a.getY()-a.getUp().getY());
 

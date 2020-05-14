@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
 
     static float downX=-1;
     static float downY=-1;
-    static final float ANCHOR_RADIUS = 75;
+    static final float ANCHOR_RADIUS = 90;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,16 +115,27 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 } else {
                                     AnchorPoint.setDoubleBond(myStructure.get(upPointAnchorIndex),myStructure.get(downPointAnchorIndex));
-                                    if(downY<myStructure.get(downPointAnchorIndex).getY()){
 
-                                        myStructure.get(downPointAnchorIndex).setDoubleBondAbove(true);
-                                        myStructure.get(upPointAnchorIndex).setDoubleBondAbove(true);
+                                    float phi = myMath.phi(myStructure.get(downPointAnchorIndex).getX(),myStructure.get(downPointAnchorIndex).getY(),myStructure.get(upPointAnchorIndex).getX(),myStructure.get(upPointAnchorIndex).getY());
+                                    float theta = Math.abs(phi);
 
+                                    if(theta < Math.sqrt(2)*Math.PI/2){
+                                        if(downY<myStructure.get(downPointAnchorIndex).getY()) {
+
+                                            myStructure.get(downPointAnchorIndex).setDoubleBondAbove(true);
+                                            myStructure.get(upPointAnchorIndex).setDoubleBondAbove(true);
+
+                                        }
+                                    } else {
+                                        if (downX < myStructure.get(downPointAnchorIndex).getX()) {
+
+                                            myStructure.get(downPointAnchorIndex).setDoubleBondAbove(true);
+                                            myStructure.get(upPointAnchorIndex).setDoubleBondAbove(true);
+                                        }
                                     }
 
-
-
                                 }
+
                                 //myStructure.get(downPointAnchorIndex).setRight(myStructure.get(upPointAnchorIndex));
                                 //myStructure.get(upPointAnchorIndex).setLeft(myStructure.get(downPointAnchorIndex));
                                 return true;

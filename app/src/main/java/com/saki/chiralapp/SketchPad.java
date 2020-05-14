@@ -20,72 +20,6 @@ public class SketchPad extends View {
 
     }
 
-    /*public static float[] doubleBondCoordinates (float xs, float ys, float xe, float ye, boolean isAbove){
-
-        float doubleBondOffsetAngle = (float) 1.5;
-        int doubleBondShrinkBy = 15;
-        float doubleBondGap = (float) (doubleBondShrinkBy * Math.atan(doubleBondOffsetAngle));
-
-        if(isAbove) {
-            float radius = (float) java.lang.Math.hypot(xe - xs, ye - ys);
-            float theta = (float) java.lang.Math.asin((ys - ye) / radius);
-            float d = (float) java.lang.Math.hypot((xs+doubleBondShrinkBy)-(xs+radius-doubleBondShrinkBy),0);
-
-            float xsd = (float) (((radius-d)*java.lang.Math.cos(theta))+(xs-doubleBondShrinkBy));
-            float ysd = (float) ((ys-doubleBondGap) - ((radius-d)* Math.sin(theta)));
-
-            float xed = (float) ((radius*java.lang.Math.cos(theta))+(xs-doubleBondShrinkBy));
-            float yed = (float) ((ys-doubleBondGap) - (radius* Math.sin(theta)));
-
-            float[] coordinates = new float[4];
-            coordinates[0] = xsd;
-            coordinates[1] = ysd;
-            coordinates[2] = xed;
-            coordinates[3] = yed;
-
-            return coordinates;
-
-
-        } else if(ys<ye) {
-            float radius = (float) java.lang.Math.hypot(xe - xs, ye - ys);
-            float theta = (float) java.lang.Math.asin((ys - ye) / radius);
-            float d = (float) java.lang.Math.hypot((xs+doubleBondShrinkBy)-(xs+radius-doubleBondShrinkBy),0);
-
-            float xsd = (float) (((radius-d)*java.lang.Math.cos(theta))+(xs-doubleBondShrinkBy));
-            float ysd = (float) ((ys+doubleBondGap) - ((radius-d)* Math.sin(theta)));
-
-            float xed = (float) ((radius*java.lang.Math.cos(theta))+(xs-doubleBondShrinkBy));
-            float yed = (float) ((ys+doubleBondGap) - (radius* Math.sin(theta)));
-
-            float[] coordinates = new float[4];
-            coordinates[0] = xsd;
-            coordinates[1] = ysd;
-            coordinates[2] = xed;
-            coordinates[3] = yed;
-
-            return coordinates;
-        } else {
-            float radius = (float) java.lang.Math.hypot(xe - xs, ye - ys);
-            float theta = (float) java.lang.Math.asin((ys - ye) / radius);
-            float d = (float) java.lang.Math.hypot((xs+doubleBondShrinkBy)-(xs+radius-doubleBondShrinkBy),0);
-
-            float xsd = xs-doubleBondShrinkBy;
-            float ysd = ys+doubleBondGap;
-
-            float xed = (float) ((d*java.lang.Math.cos(theta))+(xs-doubleBondShrinkBy));
-            float yed = (float) ((ys+doubleBondGap) - (d* Math.sin(theta)));
-
-            float[] coordinates = new float[4];
-            coordinates[0] = xsd;
-            coordinates[1] = ysd;
-            coordinates[2] = xed;
-            coordinates[3] = yed;
-
-            return coordinates;
-        }
-
-    }*/
-
     public SketchPad(Context context, AttributeSet a) {
         super(context,a);
     }
@@ -124,11 +58,15 @@ public class SketchPad extends View {
        if (DrawList != null) {
            for (AnchorPoint a : DrawList) {
                Paint elementalPaint = Element.elementHashMap.get(a.getSymbol()).getElementPaint();
-               if(!a.getSymbol().equals("C")) c.drawText(a.getSymbol(),a.getX(),a.getY(),elementalPaint);
+
 
                if(DrawList.size()==1){
-                    if(a.getSymbol().equals("C")) c.drawCircle(a.getX(), a.getY(), 10, p);
-                    //if(a.getSymbol()=="F") c.drawCircle(a.getX(), a.getY(), 10, dashPaint);
+                    if(a.getSymbol().equals("C")){
+                        c.drawCircle(a.getX(), a.getY(), 10, p);
+                    } else {
+                        c.drawText(a.getSymbol(),a.getX(),a.getY(),elementalPaint);
+                    }
+
                }
 
                if(a.getUp()!=null && a==a.getUp().getUp()){
@@ -231,6 +169,22 @@ public class SketchPad extends View {
                    //draw planar bonds
                    c.drawLine(a.getX(), a.getY(), a.getRight().getX(), a.getRight().getY(), p);
                }
+
+
+           }
+
+           for (AnchorPoint a : DrawList) {
+               Paint elementalPaint = Element.elementHashMap.get(a.getSymbol()).getElementPaint();
+
+               if(!a.getSymbol().equals("C")) {
+
+                   int symbolSquareSize = 30;
+                   Paint symbolSquarePaint = new Paint();
+                   symbolSquarePaint.setARGB(255,252,252,252);
+                   c.drawRect(a.getX()-symbolSquareSize,a.getY()-symbolSquareSize,a.getX()+symbolSquareSize,a.getY()+symbolSquareSize,symbolSquarePaint);
+                   c.drawText(a.getSymbol(),a.getX()-symbolSquareSize/2, a.getY()+symbolSquareSize/2,elementalPaint);
+               }
+
            }
 
        }

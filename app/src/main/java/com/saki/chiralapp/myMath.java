@@ -10,7 +10,7 @@ public class myMath {
         int shortenBy = 20;
         int gap = 20;
 
-        if (isAbove){
+        if (ys>ye && isAbove){
 
             float xsbStart = xs+shortenBy;
             float ysbStart = ys-gap;
@@ -30,7 +30,7 @@ public class myMath {
 
             return sbInfo;
 
-        } else{
+        } else if (ye>ys && !isAbove){
 
             float xsbStart = xs+shortenBy;
             float ysbStart = ys+gap;
@@ -38,6 +38,46 @@ public class myMath {
             float ysbEnd = ys+gap;
             float xOrigin = xs-shortenBy;
             float yOrigin = ys+gap;
+
+            float[] sbInfo = new float[7];
+            sbInfo[0] = xOrigin;
+            sbInfo[1] = yOrigin;
+            sbInfo[2] = phi;
+            sbInfo[3] = xsbStart;
+            sbInfo[4] = ysbStart;
+            sbInfo[5] = xsbEnd;
+            sbInfo[6] = ysbEnd;
+
+            return sbInfo;
+
+        } else if (ys>ye && !isAbove){
+
+            float xsbStart = xs+2*shortenBy;
+            float ysbStart = ys+gap;
+            float xsbEnd = xs+r+shortenBy;
+            float ysbEnd = ys+gap;
+            float xOrigin = xs+shortenBy;
+            float yOrigin = ys+gap;
+
+            float[] sbInfo = new float[7];
+            sbInfo[0] = xOrigin;
+            sbInfo[1] = yOrigin;
+            sbInfo[2] = phi;
+            sbInfo[3] = xsbStart;
+            sbInfo[4] = ysbStart;
+            sbInfo[5] = xsbEnd;
+            sbInfo[6] = ysbEnd;
+
+            return sbInfo;
+
+        } else {
+
+            float xsbStart = xs+2*shortenBy;
+            float ysbStart = ys-gap;
+            float xsbEnd = xs+r+shortenBy;
+            float ysbEnd = ys-gap;
+            float xOrigin = xs+shortenBy;
+            float yOrigin = ys-gap;
 
             float[] sbInfo = new float[7];
             sbInfo[0] = xOrigin;

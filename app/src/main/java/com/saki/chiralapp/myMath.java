@@ -23,9 +23,10 @@ public class myMath {
             sbInfo[0] = xOrigin;
             sbInfo[1] = yOrigin;
             sbInfo[2] = phi;
-            sbInfo[3] = xsbStart;
+            //sbInfo[3] = xsbStart;
+            sbInfo[3] = xOrigin;
             sbInfo[4] = ysbStart;
-            sbInfo[5] = xsbEnd;
+            sbInfo[5] = xOrigin+r;
             sbInfo[6] = ysbEnd;
 
             return sbInfo;
@@ -43,9 +44,9 @@ public class myMath {
             sbInfo[0] = xOrigin;
             sbInfo[1] = yOrigin;
             sbInfo[2] = phi;
-            sbInfo[3] = xsbStart;
+            sbInfo[3] = xOrigin;
             sbInfo[4] = ysbStart;
-            sbInfo[5] = xsbEnd;
+            sbInfo[5] = xOrigin+r;
             sbInfo[6] = ysbEnd;
 
             return sbInfo;

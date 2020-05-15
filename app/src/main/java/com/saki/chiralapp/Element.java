@@ -11,6 +11,7 @@ public class Element {
     private int allowedBonds;
     private Paint elementPaint;
     private float mass;
+    private int count;
 
     public String getSymbol() {
         return symbol;
@@ -42,6 +43,14 @@ public class Element {
 
     public void setMass(float mass) {
         this.mass = mass;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 
     public Element(String symbol, int allowedBonds, float mass) {
@@ -81,12 +90,12 @@ public class Element {
     static HashMap<String,Element> elementHashMap = new HashMap<String, Element>(){{
         put("C",new Element("C",4,(float) 12.0107));
         put("F",new Element("F",1,(float) 18.998403));
-        put("H",new Element("H",1,(float) 0));
-        put("O",new Element("O",3,(float) 0));
-        put("N",new Element("N",4,(float) 0));
-        put("Cl",new Element("Cl",1, (float) 0));
-        put("Br",new Element("Br",1,(float) 0));
-        put("I",new Element("I",1,(float) 0));
+        put("H",new Element("H",1,(float) 1.00784));
+        put("O",new Element("O",3,(float) 15.999));
+        put("N",new Element("N",4,(float) 14.0067));
+        put("Cl",new Element("Cl",1, (float) 35.453));
+        put("Br",new Element("Br",1,(float) 79.904));
+        put("I",new Element("I",1,(float) 126.90447));
 
 
 

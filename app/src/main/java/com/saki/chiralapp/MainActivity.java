@@ -16,25 +16,60 @@ public class MainActivity extends AppCompatActivity {
     static float downX=-1;
     static float downY=-1;
     static final float ANCHOR_RADIUS = 90;
+    static ArrayList<ArrayList<AnchorPoint>> myStructureHistory = new ArrayList<>();
+    //static ArrayList<AnchorPoint>[] myStructureHistory = myStructureHistory = new ArrayList[10];
+
+    static ArrayList<AnchorPoint> myStructure = new ArrayList<>();
+    int curHistoryIndex = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final ArrayList<AnchorPoint> myStructure = new ArrayList<>();
-
-
-
-
         ImageButton clearButton = (ImageButton) findViewById(R.id.clearButton);
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               myStructure.clear();
+
+                //myStructureHistory.add((ArrayList<AnchorPoint>) myStructure.clone());
+                //curHistoryIndex++;
+                myStructure.clear();
+
+                /*myStructure= myStructureHistory.[curHistoryIndex].clone();
+                curHistoryIndex--;
+                SketchPad sp = (SketchPad) findViewById(R.id.sketchPad);
+                sp.DrawList=myStructure;
+                sp.refreshDrawableState();*/
+
 
             }
         });
+
+        /*
+        ImageButton undoButton = (ImageButton) findViewById(R.id.undoButton);
+        undoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                myStructure=myStructureHistory.get(curHistoryIndex);
+                curHistoryIndex--;
+
+            }
+        });
+
+        ImageButton redoButton = (ImageButton) findViewById(R.id.redoButton);
+        undoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                curHistoryIndex++;
+                myStructure=myStructureHistory.get(curHistoryIndex);
+
+            }
+        });
+    */
 
         ConstraintLayout Layout = (ConstraintLayout) findViewById(R.id.constraintLayout);
         //data collection from sketchpad user touch input; data dump into myStructure arraylist
@@ -46,16 +81,13 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN: {
-                        TextView downTestText = (TextView) findViewById(R.id.downTestText);
-                        downTestText.setText(event.getX()+", "+event.getY());
                         downX = event.getX();
                         downY = event.getY();
+
                         return true;
                     }
                     case MotionEvent.ACTION_UP: {
 
-                        TextView upTestText = (TextView) findViewById(R.id.upTestText);
-                        upTestText.setText(event.getX()+", "+event.getY());
                         AnchorPoint curAnchorPoint = new AnchorPoint(event.getX(),event.getY(),"C");
                         int size = myStructure.size();
                         float minDist = Float.MAX_VALUE;
@@ -150,13 +182,20 @@ public class MainActivity extends AppCompatActivity {
 
                             }
                         }
-                        if (isValid) myStructure.add(curAnchorPoint);
+                        if (isValid) {
+
+
+                            //myStructureHistory[curHistoryIndex]=(ArrayList<AnchorPoint>) myStructure.clone();
+                            //curHistoryIndex++;
+                            myStructure.add(curAnchorPoint);
+                        }
                         v.DrawList = myStructure;
                         return true;
                     }
                 }
                 return true;
             }
+
         });
 
 

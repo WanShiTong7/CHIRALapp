@@ -14,7 +14,7 @@ public class AnchorPoint {
     private AnchorPoint down;
     private boolean isDashStart = false;
     private boolean isHorizontalFilled = false;
-    private ArrayList<String> elementList = new ArrayList<String>(Arrays.asList("C","O","N","H","F","Cl","Br","I"));
+    private static ArrayList<String> elementList = new ArrayList<String>(Arrays.asList("C","O","N","H","F","Cl","Br","I"));
     private int bondCount = 0;
     private boolean isDoubleBondValid = false;
     private boolean isDoubleBondStart = false;
@@ -24,6 +24,24 @@ public class AnchorPoint {
         this.x = x;
         this.y = y;
         this.symbol = symbol;
+    }
+
+    public AnchorPoint(AnchorPoint a){
+        this.x = a.x;
+        this.y = a.y;
+        this.symbol = a.symbol;
+        this.left = new AnchorPoint(a.left);
+        this.right = new AnchorPoint(a.right);
+        this.up = new AnchorPoint(a.up);
+        this.down = new AnchorPoint(a.down);
+        this.isWedgeStart = a.isWedgeStart;
+        this.isDashStart = a.isDashStart;
+        this.isHorizontalFilled = a.isHorizontalFilled;
+        this.bondCount = a.bondCount;
+        this.isDoubleBondValid = a.isDoubleBondValid;
+        this.isDoubleBondStart = a.isDoubleBondStart;
+        this.isDoubleBondAbove = a.isDoubleBondAbove;
+
     }
 
     public float getX() {
@@ -219,6 +237,8 @@ public class AnchorPoint {
         anchor1.setDown(anchor2);
         anchor2.setUp(anchor1);
         anchor2.setDown(anchor1);
+        anchor1.bondCount++;
+        anchor2.bondCount++;
         if(anchor1.getX()<anchor2.getX()){
 
             anchor1.setDoubleBondStart(true);
@@ -240,6 +260,60 @@ public class AnchorPoint {
             anchor2.setRight(null);
 
         }
+    }
+
+    public static boolean Compare(AnchorPoint r, AnchorPoint l, AnchorPoint u, AnchorPoint d) {
+        //return false if any of four are the same, return true if all four are different
+        //todo: below comment occurred as expected, fix this. Current idea: create copy, set copy's null slots to Hydrogen, pass copy through compare
+        //below might fail if a position is null...
+        if (r.getSymbol() == l.getSymbol() || r.getSymbol() == u.getSymbol() || r.getSymbol() == d.getSymbol()) {
+            return false;
+        } else if (l.getSymbol() == u.getSymbol() || l.getSymbol() == d.getSymbol()){
+            return false;
+        } else if (u.getSymbol() == d.getSymbol()) {
+            return false;
+        } return true;
+    }
+
+    public static boolean isAnchorPointChiral(AnchorPoint a) {
+        //step out by one and compare four nodes
+        if(a.getRight()==null || a.getLeft() ==null || a.getUp() == null || a.getDown() == null){
+            //todo: below works, but could be cleaner...
+            AnchorPoint b = new AnchorPoint(a.getX(),a.getY(),a.getSymbol());
+            b.setRight(a.getRight());
+            b.setLeft(a.getLeft());
+            b.setDown(a.getDown());
+            b.setUp(a.getUp());
+            AnchorPoint c = new AnchorPoint(0,0,"H");
+            AnchorPoint d = new AnchorPoint(0,0,"H");
+            AnchorPoint e = new AnchorPoint(0,0,"H");
+            AnchorPoint f = new AnchorPoint(0,0,"H");
+            if (b.getRight() ==null) {
+                b.setRight(c);
+            }
+
+            if (b.getLeft() ==null) {
+                b.setLeft(d);
+            }
+
+            if (b.getUp() ==null) {
+                b.setUp(e);
+            }
+
+            if (b.getDown() ==null) {
+                b.setDown(f);
+            }
+            if(AnchorPoint.Compare(b.getRight(),b.getLeft(),b.getUp(),b.getDown())){
+                return true;
+            }
+        }
+        if(a.getRight()!=null && a.getLeft() != null && a.getUp()!= null && a.getDown() != null){
+            if (AnchorPoint.Compare(a.getRight(), a.getLeft(), a.getUp(), a.getDown())){
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

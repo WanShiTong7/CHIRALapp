@@ -6,9 +6,11 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.TextView;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+
 
 public class SketchPad extends View {
 
@@ -16,7 +18,6 @@ public class SketchPad extends View {
 
     public SketchPad(Context context) {
         super(context);
-
 
     }
 
@@ -43,8 +44,6 @@ public class SketchPad extends View {
        //dashPaint.setStrokeCap(Paint.Cap.SQUARE);
        Paint wedgePaint = new Paint();
        wedgePaint.setARGB(255, 255, 0, 0);
-       wedgePaint.setStrokeWidth(10);
-       wedgePaint.setStrokeCap(Paint.Cap.SQUARE);
        //todo: make sweepAngle variable inversely proportional to distance d
        //int sweepAngle = 5;
       /* Paint dashPaint2 = new Paint();
@@ -62,7 +61,11 @@ public class SketchPad extends View {
 
                if(DrawList.size()==1){
                     if(a.getSymbol().equals("C")){
-                        c.drawCircle(a.getX(), a.getY(), 10, p);
+                        if(AnchorPoint.isAnchorPointChiral(a)){
+                            c.drawCircle(a.getX(), a.getY(), 10, wedgePaint);
+                        } else {
+                            c.drawCircle(a.getX(), a.getY(), 10, p);
+                        }
                     } else {
                         c.drawText(a.getSymbol(),a.getX(),a.getY(),elementalPaint);
                     }
@@ -72,7 +75,6 @@ public class SketchPad extends View {
                if(a.getUp()!=null && a==a.getUp().getUp()){
 
                     //Draw Double bond
-                   //float doubleBondWidth = 10;
 
                    if(a.isDoubleBondStart()){
 
@@ -81,13 +83,11 @@ public class SketchPad extends View {
                        //above method returns [0: xOrigin, 1: yOrigin, 2: phi, 3: xsbStart, 4: ysbStart, 5: xsbEnd, 6: ysbEnd]
                        float[] dbStartCoordinates = myMath.rotate(dbInfo[3],dbInfo[4],dbInfo[0],dbInfo[1],dbInfo[2]);
                        float[] dbEndCoordinates = myMath.rotate(dbInfo[5],dbInfo[6],dbInfo[0],dbInfo[1],dbInfo[2]);
-                       //float[] dbCoordinates = doubleBondCoordinates(a.getX(),a.getY(),a.getUp().getX(),a.getUp().getY(),a.isDoubleBondAbove());
+
                        c.drawLine(dbStartCoordinates[0],dbStartCoordinates[1],dbEndCoordinates[0],dbEndCoordinates[1],p);
                        c.drawLine(a.getX(),a.getY(),a.getUp().getX(),a.getUp().getY(),p);
 
                    }
-                   //c.drawLine(a.getX()+doubleBondWidth, a.getY()-doubleBondWidth, a.getUp().getX()+doubleBondWidth, a.getUp().getY()-doubleBondWidth, p);
-                   //c.drawLine(a.getX()-doubleBondWidth, a.getY()+doubleBondWidth, a.getUp().getX()-doubleBondWidth, a.getUp().getY()+doubleBondWidth, p);
 
                }
 
@@ -173,17 +173,44 @@ public class SketchPad extends View {
 
            }
 
+           float molarmass = 0;
+
            for (AnchorPoint a : DrawList) {
                Paint elementalPaint = Element.elementHashMap.get(a.getSymbol()).getElementPaint();
 
+
                if(!a.getSymbol().equals("C")) {
+
+                   molarmass = molarmass + Element.elementHashMap.get(a.getSymbol()).getMass();
 
                    int symbolSquareSize = 30;
                    Paint symbolSquarePaint = new Paint();
                    symbolSquarePaint.setARGB(255,252,252,252);
-                   c.drawRect(a.getX()-symbolSquareSize,a.getY()-symbolSquareSize,a.getX()+symbolSquareSize,a.getY()+symbolSquareSize,symbolSquarePaint);
+                   c.drawRoundRect(a.getX()-symbolSquareSize,a.getY()-symbolSquareSize,a.getX()+symbolSquareSize,a.getY()+symbolSquareSize,20,20,symbolSquarePaint);
                    c.drawText(a.getSymbol(),a.getX()-symbolSquareSize/2, a.getY()+symbolSquareSize/2,elementalPaint);
+
+               } else {
+
+                   if(AnchorPoint.isAnchorPointChiral(a)){
+                       c.drawCircle(a.getX(), a.getY(), 10, wedgePaint);
+                   }
+
+                    molarmass = molarmass + Element.elementHashMap.get(a.getSymbol()).getMass();
+                    if (a.getUp()==null) molarmass = molarmass + Element.elementHashMap.get("H").getMass();
+                   if (a.getDown()==null) molarmass = molarmass + Element.elementHashMap.get("H").getMass();
+                   if (a.getRight()==null) molarmass = molarmass + Element.elementHashMap.get("H").getMass();
+                   if (a.getLeft()==null) molarmass = molarmass + Element.elementHashMap.get("H").getMass();
+
                }
+
+               Paint molarMassPaint = new Paint();
+               Paint molarMassRectPaint = new Paint();
+               molarMassRectPaint.setARGB(255,252,252,252);
+               molarMassPaint.setARGB(255,0,0,0);
+               molarMassPaint.setTextSize(30);
+
+               c.drawRect(750,110,950,155,molarMassRectPaint);
+               c.drawText(molarmass+"",750,150,molarMassPaint);
 
            }
 

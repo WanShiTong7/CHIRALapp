@@ -84,7 +84,6 @@ public class Stereochemistry {
         descendingSort[2] = sort[1];
         descendingSort[3] = sort[0];
 
-        int r =1;
         for (int i = 0; i < sort.length; i++) {
 
            if (sort[i] == mR) {
@@ -105,6 +104,10 @@ public class Stereochemistry {
         rank[3] = rD;
 
         return rank;
+    }
+
+    public static boolean RorS(int[] ranks){
+        return true;    
     }
 
     public static boolean RorS(AnchorPoint a) {

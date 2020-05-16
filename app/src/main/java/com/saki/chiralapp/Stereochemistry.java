@@ -84,15 +84,15 @@ public class Stereochemistry {
         descendingSort[2] = sort[1];
         descendingSort[3] = sort[0];
 
-        for (int i = 0; i < sort.length; i++) {
+        for (int i = 0; i < 4; i++) {
 
-           if (sort[i] == mR) {
+           if (descendingSort[i] == mR) {
                rR = i+1;
-            } else if (sort[i] == mL) {
+            } else if (descendingSort[i] == mL) {
                 rL = i+1;
-            } else if (sort[i] == mU) {
+            } else if (descendingSort[i] == mU) {
                rU = i+1;
-           }else if (sort[i] == mD) {
+           }else if (descendingSort[i] == mD) {
                rD = i+1;
            }
         }
@@ -107,7 +107,7 @@ public class Stereochemistry {
     }
 
     public static boolean RorS(int[] ranks){
-        return true;    
+        return true;
     }
 
     public static boolean RorS(AnchorPoint a) {
@@ -119,14 +119,14 @@ public class Stereochemistry {
         R1[2] = 3;
 
         int[] R2 = new int[3];
-        R1[0] = 3;
-        R1[1] = 1;
-        R1[2] = 2;
+        R2[0] = 3;
+        R2[1] = 1;
+        R2[2] = 2;
 
         int[] R3 = new int[3];
-        R1[0] = 2;
-        R1[1] = 3;
-        R1[2] = 1;
+        R3[0] = 2;
+        R3[1] = 3;
+        R3[2] = 1;
         if(a.getRight()==null || a.getLeft() ==null || a.getUp() == null || a.getDown() == null){
             //todo: below works, but could be cleaner...
             AnchorPoint b = new AnchorPoint(a.getX(),a.getY(),a.getSymbol());

@@ -40,7 +40,7 @@ public class SketchPad extends View {
        //c.drawArc(10,10,400,400,270,10,true,p);
        Paint dashPaint = new Paint();
        dashPaint.setARGB(255, 0, 255, 0);
-       dashPaint.setStrokeWidth(10);
+       //dashPaint.setStrokeWidth(10);
        //dashPaint.setStrokeCap(Paint.Cap.SQUARE);
        Paint wedgePaint = new Paint();
        wedgePaint.setARGB(255, 255, 0, 0);
@@ -61,7 +61,7 @@ public class SketchPad extends View {
 
                if(DrawList.size()==1){
                     if(a.getSymbol().equals("C")){
-                        if(AnchorPoint.isAnchorPointChiral(a)){
+                        if(Stereochemistry.isAnchorPointChiral(a)){
                             c.drawCircle(a.getX(), a.getY(), 10, wedgePaint);
                         } else {
                             c.drawCircle(a.getX(), a.getY(), 10, p);
@@ -191,8 +191,12 @@ public class SketchPad extends View {
 
                } else {
 
-                   if(AnchorPoint.isAnchorPointChiral(a)){
-                       c.drawCircle(a.getX(), a.getY(), 10, wedgePaint);
+                   if(Stereochemistry.isAnchorPointChiral(a)){
+                       if(Stereochemistry.RorS(a)) {
+                           c.drawCircle(a.getX(), a.getY(), 10, wedgePaint);
+                       } else {
+                           c.drawCircle(a.getX(), a.getY(), 10, dashPaint);
+                       }
                    }
 
                     molarmass = molarmass + Element.elementHashMap.get(a.getSymbol()).getMass();

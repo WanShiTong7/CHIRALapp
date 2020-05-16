@@ -192,7 +192,7 @@ public class SketchPad extends View {
                } else {
 
                    if(Stereochemistry.isAnchorPointChiral(a)){
-                       if(Stereochemistry.RorS(a)) {
+                       if(Stereochemistry.RorS(Stereochemistry.Rank(a),a)) {
                            c.drawCircle(a.getX(), a.getY(), 10, wedgePaint);
                        } else {
                            c.drawCircle(a.getX(), a.getY(), 10, dashPaint);

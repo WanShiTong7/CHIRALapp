@@ -4,6 +4,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class AnchorPoint {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    private int id;
     private float x;
     private float y;
     private String symbol = "C";
@@ -20,6 +29,7 @@ public class AnchorPoint {
     private boolean isDoubleBondStart = false;
     private boolean isDoubleBondAbove = false;
 
+
     public AnchorPoint(float x, float y, String symbol) {
         this.x = x;
         this.y = y;
@@ -27,13 +37,17 @@ public class AnchorPoint {
     }
 
     public AnchorPoint(AnchorPoint a){
+
+        this.id = a.id;
         this.x = a.x;
         this.y = a.y;
         this.symbol = a.symbol;
-        this.left = new AnchorPoint(a.left);
-        this.right = new AnchorPoint(a.right);
-        this.up = new AnchorPoint(a.up);
-        this.down = new AnchorPoint(a.down);
+
+        this.right = a.right;
+        this.left = a.left;
+        this.down = a.down;
+        this.up = a.up;
+
         this.isWedgeStart = a.isWedgeStart;
         this.isDashStart = a.isDashStart;
         this.isHorizontalFilled = a.isHorizontalFilled;

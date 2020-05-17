@@ -69,7 +69,12 @@ public class Stereochemistry {
         float mR = Element.elementHashMap.get(a.getRight().getSymbol()).getMass();
         float mL = Element.elementHashMap.get(a.getLeft().getSymbol()).getMass();
         float mU = Element.elementHashMap.get(a.getUp().getSymbol()).getMass();
-        float mD = Element.elementHashMap.get(a.getDown().getSymbol()).getMass();
+        float mD;
+        if(a.getDown()==null){
+            mD = Element.elementHashMap.get("H").getMass();
+        } else {
+            mD = Element.elementHashMap.get(a.getDown().getSymbol()).getMass();
+        }
 
         float[] sort = new float[4];
         sort[0] = mR;
@@ -106,11 +111,102 @@ public class Stereochemistry {
         return rank;
     }
 
-    public static boolean RorS(int[] ranks){
-        return true;
+    public static boolean RorS(int[] rank, AnchorPoint a) {
+        //rank[2,3,1,4]
+        //rank[2,4,3,1] -> [2,1,3,4]
+        float xA=1;
+        float yA=1;
+        float xB=1;
+        float yB=1;
+        float xC=1;
+        float yC=1;
+        boolean Manipulated = false;
+
+        if(rank[3]!=4) {
+
+            int idx = 0;
+            //find where four is
+            while (rank[idx] != 4) {
+                idx++;
+            }
+
+            rank[idx]=rank[3];
+            rank[3]=4;
+
+            Manipulated = true;
+        }
+
+        if (rank[3] == 4) {
+            for (int i = 0; i < 3; i++) {
+
+                if (i == 0) {
+                    switch (rank[i]) {
+                        case 1:
+                            xA = a.getRight().getX();
+                            yA = a.getRight().getY();
+                            break;
+
+                        case 2:
+                            xB = a.getRight().getX();
+                            yB = a.getRight().getY();
+                            break;
+
+                        case 3:
+                            xC = a.getRight().getX();
+                            yC = a.getRight().getY();
+                            break;
+                    }
+                } else if (i == 1) {
+                    switch (rank[i]) {
+                        case 1:
+                            xA = a.getLeft().getX();
+                            yA = a.getLeft().getY();
+                            break;
+
+                        case 2:
+                            xB = a.getLeft().getX();
+                            yB = a.getLeft().getY();
+                            break;
+
+                        case 3:
+                            xC = a.getLeft().getX();
+                            yC = a.getLeft().getY();
+                            break;
+                    }
+                } else {
+                    switch (rank[i]) {
+                        case 1:
+                            xA = a.getUp().getX();
+                            yA = a.getUp().getY();
+                            break;
+
+                        case 2:
+                            xB = a.getUp().getX();
+                            yB = a.getUp().getY();
+                            break;
+
+                        case 3:
+                            xC = a.getUp().getX();
+                            yC = a.getUp().getY();
+                            break;
+                    }
+
+                }
+            }
+
+        }
+
+        float detO;
+        detO = (xB*yC+xA*yB+yA*xC)-(yA*xB+yB*xC+xA*yC);
+        if(!Manipulated){
+            return (detO>0);
+        } else {
+            return (detO<0);
+        }
+
     }
 
-    public static boolean RorS(AnchorPoint a) {
+    /*public static boolean RorS(AnchorPoint a) {
         //input is anchorpoint, returns true if R, false if S
         //R arrays when down is back
         int[] R1 = new int[3];
@@ -130,10 +226,39 @@ public class Stereochemistry {
         if(a.getRight()==null || a.getLeft() ==null || a.getUp() == null || a.getDown() == null){
             //todo: below works, but could be cleaner...
             AnchorPoint b = new AnchorPoint(a.getX(),a.getY(),a.getSymbol());
-            b.setRight(a.getRight());
-            b.setLeft(a.getLeft());
+            //todo: set b's locations based on geography
+            if((a.getUp().getY()<a.getLeft().getY()) && (a.getUp().getY()<a.getRight().getY())){
+                b.setUp(a.getUp());
+                if(a.getRight().getX()>a.getLeft().getX()){
+                    b.setRight(a.getRight());
+                    b.setLeft(a.getLeft());
+                } else {
+                    b.setRight(a.getLeft());
+                    b.setLeft(a.getRight());
+                }
+            } else if (a.getLeft().getY()<a.getRight().getY()) {
+                b.setUp(a.getLeft());
+                if(a.getUp().getX()>a.getRight().getX()) {
+                    b.setRight(a.getUp());
+                    b.setLeft(a.getRight());
+                } else {
+                    b.setRight(a.getRight());
+                    b.setLeft(a.getUp());
+                }
+            } else {
+                b.setUp(a.getRight());
+                if(a.getUp().getX()>a.getLeft().getX()) {
+                    b.setRight(a.getUp());
+                    b.setLeft(a.getLeft());
+                } else {
+                    b.setRight(a.getLeft());
+                    b.setLeft(a.getUp());
+                }
+            }
+            //b.setRight(a.getRight());
+            //b.setLeft(a.getLeft());
             b.setDown(a.getDown());
-            b.setUp(a.getUp());
+            //b.setUp(a.getUp());
             AnchorPoint c = new AnchorPoint(0,0,"H");
             AnchorPoint d = new AnchorPoint(0,0,"H");
             AnchorPoint e = new AnchorPoint(0,0,"H");
@@ -258,6 +383,6 @@ public class Stereochemistry {
         }
 
         return true;
-    }
+    }*/
 
 }

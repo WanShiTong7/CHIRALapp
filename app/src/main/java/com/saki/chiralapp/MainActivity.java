@@ -34,12 +34,10 @@ public class MainActivity extends AppCompatActivity {
             smap.put(s.get(i),i);
             c.add(new AnchorPoint(s.get(i)));
             tmap.put(i,c.get(i));
-            //c.add(ap);
         }
 
         //fix LRUD pointers in the clone
         for (int i=0; i<c.size(); i++) {
-
             if(c.get(i).getLeft()!=null) c.get(i).setLeft(tmap.get(smap.get(c.get(i).getLeft())));
             if(c.get(i).getRight()!=null) c.get(i).setRight(tmap.get(smap.get(c.get(i).getRight())));
             if(c.get(i).getUp()!=null) c.get(i).setUp(tmap.get(smap.get(c.get(i).getUp())));
@@ -55,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ImageButton clearButton = (ImageButton) findViewById(R.id.clearButton);
+        //ImageButton clearButton = (ImageButton) findViewById(R.id.clearButton);
+        ImageButton clearButton = (ImageButton) findViewById(R.id.undoButton);
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

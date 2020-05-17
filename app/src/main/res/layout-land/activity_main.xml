@@ -8,7 +8,7 @@
     android:backgroundTint="#FFFFFF"
     tools:context=".MainActivity">
 
-    <View
+    <!--View
         android:id="@+id/divider"
         android:layout_width="0dp"
         android:layout_height="5dp"
@@ -106,7 +106,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/divider"
-        app:layout_constraintVertical_bias="0.0"></LinearLayout>
+        app:layout_constraintVertical_bias="0.0"></LinearLayout!-->
 
     <ImageButton
         android:id="@+id/clearButton"
@@ -145,14 +145,14 @@
         android:id="@+id/sketchPad"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/divider"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
-    <TextView
+    <!--TextView
         android:id="@+id/molarMass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -161,9 +161,9 @@
         app:layout_constraintBottom_toTopOf="@+id/divider"
         app:layout_constraintEnd_toEndOf="@+id/sketchPad"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" -!/>
 
-    <!--com.saki.chiralapp.MainActivity.myView
+    <!-com.saki.chiralapp.MainActivity.myView
         android:id="@+id/sketchPad"
         android:layout_width="0dp"
         android:layout_height="0dp"

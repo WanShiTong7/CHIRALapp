@@ -4,23 +4,48 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.os.Bundle;
+import android.telephony.AccessNetworkConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
     static float downX=-1;
     static float downY=-1;
     static final float ANCHOR_RADIUS = 90;
-    static ArrayList<ArrayList<AnchorPoint>> myStructureHistory = new ArrayList<>();
-    //static ArrayList<AnchorPoint>[] myStructureHistory = myStructureHistory = new ArrayList[10];
 
     static ArrayList<AnchorPoint> myStructure = new ArrayList<>();
-    int curHistoryIndex = 0;
+
+    //History for undo redo
+    static StructureHistory myStructureHistory = new StructureHistory();
+
+    //Clone Structure by  Deep coping
+    static ArrayList<AnchorPoint> cloneStructure(ArrayList<AnchorPoint> s){
+        HashMap<AnchorPoint,Integer> smap = new HashMap<>();
+        HashMap<Integer, AnchorPoint> tmap = new HashMap<>();
+        ArrayList<AnchorPoint> c = new ArrayList<>();
+        for (int i=0; i<s.size(); i++) {
+            s.get(i).setId(i);
+            smap.put(s.get(i),i);
+            c.add(new AnchorPoint(s.get(i)));
+            tmap.put(i,c.get(i));
+        }
+
+        //fix LRUD pointers in the clone
+        for (int i=0; i<c.size(); i++) {
+            if(c.get(i).getLeft()!=null) c.get(i).setLeft(tmap.get(smap.get(c.get(i).getLeft())));
+            if(c.get(i).getRight()!=null) c.get(i).setRight(tmap.get(smap.get(c.get(i).getRight())));
+            if(c.get(i).getUp()!=null) c.get(i).setUp(tmap.get(smap.get(c.get(i).getUp())));
+            if(c.get(i).getDown()!=null) c.get(i).setDown(tmap.get(smap.get(c.get(i).getDown())));
+        }
+
+        return c;
+    }
 
 
     @Override
@@ -28,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ImageButton clearButton = (ImageButton) findViewById(R.id.clearButton);
+        //ImageButton clearButton = (ImageButton) findViewById(R.id.clearButton);
+        ImageButton clearButton = (ImageButton) findViewById(R.id.undoButton);
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -37,13 +63,11 @@ public class MainActivity extends AppCompatActivity {
                 //curHistoryIndex++;
                 myStructure.clear();
 
-                /*myStructure= myStructureHistory.[curHistoryIndex].clone();
-                curHistoryIndex--;
+                myStructure = MainActivity.cloneStructure(myStructureHistory.get());
+
                 SketchPad sp = (SketchPad) findViewById(R.id.sketchPad);
                 sp.DrawList=myStructure;
-                sp.refreshDrawableState();*/
-
-
+                sp.refreshDrawableState();
             }
         });
 
@@ -95,6 +119,9 @@ public class MainActivity extends AppCompatActivity {
                         int upPointAnchorIndex = -1;
                         boolean isValid=true;
 
+                        //Take snapshot for undo redo
+                        myStructureHistory.add(MainActivity.cloneStructure(myStructure));
+
                         if (size>0){
                             //find proximity of downpoint to anchor
                             for (AnchorPoint a: myStructure){
@@ -121,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
                                 //curAnchorPoint.setLeft(myStructure.get(size - 1));
                             } else if (downPointAnchorIndex==-1 && upPointAnchorIndex==-1){
                                 //both uppoint and downpoint are invalid; do nothing
+                                myStructureHistory.get();
                                 return true;
                             } else if (downPointAnchorIndex!=-1 && upPointAnchorIndex==-1) {
                                 //downpoint is valid and uppoint is invalid; fill empty slot with highest priority, set existing anchor as wedge/dash start
@@ -154,12 +182,18 @@ public class MainActivity extends AppCompatActivity {
                                     if(theta < Math.sqrt(2)*Math.PI/2){
                                         if(downY<myStructure.get(downPointAnchorIndex).getY()) {
 
+                                            //Add to the history and set double bonds
+                                           // myStructureHistory.add(MainActivity.cloneStructure(myStructure));
+
                                             myStructure.get(downPointAnchorIndex).setDoubleBondAbove(true);
                                             myStructure.get(upPointAnchorIndex).setDoubleBondAbove(true);
 
                                         }
                                     } else {
                                         if (downX < myStructure.get(downPointAnchorIndex).getX()) {
+
+                                            //Add to the history and set double bonds
+                                            //myStructureHistory.add(MainActivity.cloneStructure(myStructure));
 
                                             myStructure.get(downPointAnchorIndex).setDoubleBondAbove(true);
                                             myStructure.get(upPointAnchorIndex).setDoubleBondAbove(true);
@@ -174,6 +208,9 @@ public class MainActivity extends AppCompatActivity {
                             } else if ((downPointAnchorIndex!=-1 && upPointAnchorIndex!=-1 && downPointAnchorIndex==upPointAnchorIndex)) {
                                 //upoint and downpoint are valid, upoint equals downpoint; enter element switcher
                                 //todo: implement special cases for oxygen and nitrogen
+
+                                //Add to the history and switch the element
+                                //myStructureHistory.add(MainActivity.cloneStructure(myStructure));
                                 myStructure.get(downPointAnchorIndex).switchElement();
 
                                 //myStructure.get(size - 1).setRight(myStructure.get(downPointAnchorIndex));
@@ -184,9 +221,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                         if (isValid) {
 
-
-                            //myStructureHistory[curHistoryIndex]=(ArrayList<AnchorPoint>) myStructure.clone();
-                            //curHistoryIndex++;
                             myStructure.add(curAnchorPoint);
                         }
                         v.DrawList = myStructure;

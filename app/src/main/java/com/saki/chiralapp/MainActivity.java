@@ -53,16 +53,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //ImageButton clearButton = (ImageButton) findViewById(R.id.clearButton);
-        ImageButton clearButton = (ImageButton) findViewById(R.id.undoButton);
-        clearButton.setOnClickListener(new View.OnClickListener() {
+        //Undo
+        ImageButton undoButton = (ImageButton) findViewById(R.id.undoButton);
+        undoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                //myStructureHistory.add((ArrayList<AnchorPoint>) myStructure.clone());
-                //curHistoryIndex++;
-                myStructure.clear();
-
+                //myStructureHistory.add(myStructure);
                 myStructure = MainActivity.cloneStructure(myStructureHistory.get());
 
                 SketchPad sp = (SketchPad) findViewById(R.id.sketchPad);
@@ -71,31 +68,35 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /*
-        ImageButton undoButton = (ImageButton) findViewById(R.id.undoButton);
-        undoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                myStructure=myStructureHistory.get(curHistoryIndex);
-                curHistoryIndex--;
-
-            }
-        });
-
+        //Redo
         ImageButton redoButton = (ImageButton) findViewById(R.id.redoButton);
-        undoButton.setOnClickListener(new View.OnClickListener() {
+        redoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                curHistoryIndex++;
-                myStructure=myStructureHistory.get(curHistoryIndex);
+                myStructure=MainActivity.cloneStructure(myStructureHistory.getNext());
+
+                SketchPad sp = (SketchPad) findViewById(R.id.sketchPad);
+                sp.DrawList=myStructure;
+                sp.refreshDrawableState();
 
             }
         });
-    */
+
+        //Clear
+        ImageButton clearButton = (ImageButton) findViewById(R.id.clearButton);
+        clearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Take snapshot for undo redo before clear
+                myStructureHistory.add(MainActivity.cloneStructure(myStructure));
+                myStructure.clear();
+
+            }
+        });
 
         ConstraintLayout Layout = (ConstraintLayout) findViewById(R.id.constraintLayout);
+
         //data collection from sketchpad user touch input; data dump into myStructure arraylist
         Layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -120,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                         boolean isValid=true;
 
                         //Take snapshot for undo redo
-                        myStructureHistory.add(MainActivity.cloneStructure(myStructure));
+                        //myStructureHistory.add(MainActivity.cloneStructure(myStructure));
 
                         if (size>0){
                             //find proximity of downpoint to anchor
@@ -148,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
                                 //curAnchorPoint.setLeft(myStructure.get(size - 1));
                             } else if (downPointAnchorIndex==-1 && upPointAnchorIndex==-1){
                                 //both uppoint and downpoint are invalid; do nothing
-                                myStructureHistory.get();
+                                //myStructureHistory.get();
                                 return true;
                             } else if (downPointAnchorIndex!=-1 && upPointAnchorIndex==-1) {
                                 //downpoint is valid and uppoint is invalid; fill empty slot with highest priority, set existing anchor as wedge/dash start
@@ -204,17 +205,18 @@ public class MainActivity extends AppCompatActivity {
 
                                 //myStructure.get(downPointAnchorIndex).setRight(myStructure.get(upPointAnchorIndex));
                                 //myStructure.get(upPointAnchorIndex).setLeft(myStructure.get(downPointAnchorIndex));
+                                //Take snapshot for undo redo
+                                myStructureHistory.add(MainActivity.cloneStructure(myStructure));
                                 return true;
                             } else if ((downPointAnchorIndex!=-1 && upPointAnchorIndex!=-1 && downPointAnchorIndex==upPointAnchorIndex)) {
                                 //upoint and downpoint are valid, upoint equals downpoint; enter element switcher
                                 //todo: implement special cases for oxygen and nitrogen
 
-                                //Add to the history and switch the element
-                                //myStructureHistory.add(MainActivity.cloneStructure(myStructure));
                                 myStructure.get(downPointAnchorIndex).switchElement();
 
-                                //myStructure.get(size - 1).setRight(myStructure.get(downPointAnchorIndex));
-                                //myStructure.get(downPointAnchorIndex).setLeft(myStructure.get(size-1));
+
+                                //Take snapshot for undo redo
+                                myStructureHistory.add(MainActivity.cloneStructure(myStructure));
                                 return true;
 
                             }
@@ -224,6 +226,8 @@ public class MainActivity extends AppCompatActivity {
                             myStructure.add(curAnchorPoint);
                         }
                         v.DrawList = myStructure;
+                        //Take snapshot for undo redo
+                        myStructureHistory.add(MainActivity.cloneStructure(myStructure));
                         return true;
                     }
                 }

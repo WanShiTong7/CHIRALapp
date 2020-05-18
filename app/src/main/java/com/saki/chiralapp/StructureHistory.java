@@ -27,10 +27,24 @@ public class StructureHistory {
     }
 
     public  ArrayList<AnchorPoint> get(){
-        if (curHistoryIndex == -1){
+        if (curHistoryIndex <=0){
             return new ArrayList<>();
+        }else {
+            curHistoryIndex--;
+            return myStructureHistory.get(curHistoryIndex);
         }
-        curHistoryIndex--;
-        return myStructureHistory.get(curHistoryIndex+1);
+    }
+
+    public  ArrayList<AnchorPoint> getNext(){
+
+
+        if (myStructureHistory.size() > curHistoryIndex+1){
+            curHistoryIndex++;
+            return myStructureHistory.get(curHistoryIndex);
+        }else if (curHistoryIndex == -1){
+            return new ArrayList<>();
+        }else {
+            return myStructureHistory.get(curHistoryIndex);
+        }
     }
 }
